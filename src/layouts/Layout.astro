@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Professioneel schilderwerk voor binnen en buiten." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="nl">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | Schilder Portfolio</title>
+		<meta name="description" content={description} />
+	</head>
+	<body class="bg-white text-gray-900 font-sans antialiased">
+		<header class="border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-md z-50">
+			<nav class="container mx-auto px-4 h-20 flex items-center justify-between">
+				<a href="/" class="text-xl font-bold tracking-tight uppercase">Schilder<span class="text-gray-400">Naam</span></a>
+				
+				<div class="hidden md:flex items-center gap-8">
+					<a href="/projecten" class="text-sm font-medium hover:text-gray-500 transition-colors">Projecten</a>
+					<a href="/over-mij" class="text-sm font-medium hover:text-gray-500 transition-colors">Over Mij</a>
+					<a href="/contact" class="px-5 py-2.5 bg-black text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors">
+						Vraag een offerte aan
+					</a>
+				</div>
+
+				<button class="md:hidden text-sm font-medium uppercase tracking-widest">Menu</button>
+			</nav>
+		</header>
+
+		<main>
+			<slot />
+		</main>
+
+		<footer class="bg-gray-50 border-t border-gray-100 py-12 mt-20">
+			<div class="container mx-auto px-4 text-center">
+				<p class="text-sm text-gray-500 mb-4">&copy; {new Date().getFullYear()} SchilderNaam. Alle rechten voorbehouden.</p>
+				<p class="text-xs text-gray-400 uppercase tracking-widest">KvK: 12345678 | Vestiging: Utrecht</p>
+			</div>
+		</footer>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--accent: 136, 58, 234;
+		--accent-light: 224, 204, 250;
+		--accent-dark: 49, 10, 101;
+		--accent-gradient: linear-gradient(
+			45deg,
+			rgb(var(--accent)),
+			rgb(var(--accent-light)) 30%,
+			white 60%
+		);
+	}
+</style>

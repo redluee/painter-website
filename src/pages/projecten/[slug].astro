@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const projecten = await getCollection('projecten');
+  return projecten.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<Layout title={project.data.titel} description={project.data.beschrijving}>
+  <article class="container mx-auto px-4 py-20">
+    <div class="max-w-4xl mx-auto">
+      <header class="mb-12">
+        <div class="flex items-center gap-4 text-sm text-gray-500 uppercase tracking-widest mb-4">
+          <span>{project.data.categorie}</span>
+          <span class="w-1 h-1 bg-gray-300 rounded-full"></span>
+          <span>{new Date(project.data.datum).toLocaleDateString('nl-NL', { year: 'numeric', month: 'long' })}</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold mb-8">{project.data.titel}</h1>
+      </header>
+
+      {project.data.afbeeldingen && project.data.afbeeldingen.length > 0 && (
+        <div class="grid grid-cols-1 gap-8 mb-16">
+          {project.data.afbeeldingen.map((img: string) => (
+            <img src={img} alt={project.data.titel} class="w-full h-auto" />
+          ))}
+        </div>
+      )}
+
+      <div class="prose prose-lg max-w-none">
+        <Content />
+      </div>
+
+      <footer class="mt-20 pt-12 border-t border-gray-100">
+        <div class="bg-gray-50 p-8 md:p-12 text-center">
+          <h2 class="text-2xl font-bold mb-6">Interesse in een soortgelijk project?</h2>
+          <p class="text-gray-600 mb-8 max-w-xl mx-auto">
+            Wij denken graag met u mee over de mogelijkheden voor uw woning of bedrijfspand.
+          </p>
+          <a href="/contact" class="inline-block px-10 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-colors">
+            Vraag een vrijblijvende offerte aan
+          </a>
+        </div>
+      </footer>
+    </div>
+  </article>
+</Layout>
