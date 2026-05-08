@@ -18,6 +18,38 @@ const { title, description = "Professioneel schilderwerk voor binnen en buiten."
 		<meta name="generator" content={Astro.generator} />
 		<title>{title} | Schilder Portfolio</title>
 		<meta name="description" content={description} />
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "LocalBusiness",
+				"name": "SchilderNaam",
+				"image": "https://example.com/logo.png",
+				"address": {
+					"@type": "PostalAddress",
+					"streetAddress": "Straatnaam 123",
+					"addressLocality": "Utrecht",
+					"postalCode": "1234 AB",
+					"addressCountry": "NL"
+				},
+				"geo": {
+					"@type": "GeoCoordinates",
+					"latitude": 52.0907,
+					"longitude": 5.1214
+				},
+				"url": "https://example.com",
+				"telephone": "+31612345678",
+				"openingHoursSpecification": [
+					{
+						"@type": "OpeningHoursSpecification",
+						"dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+						"opens": "08:00",
+						"closes": "17:00"
+					}
+				],
+				"areaServed": "Heel Nederland",
+				"iso6523Code": "12345678"
+			}
+		</script>
 	</head>
 	<body class="bg-white text-gray-900 font-sans antialiased">
 		<header class="border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-md z-50">
