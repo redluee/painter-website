@@ -1,18 +1,14 @@
 ---
-import { getAllProjects } from '../../lib/data';
+import { getProjectBySlugRuntime, DEFAULT_IMAGE } from '../../lib/data';
 import Layout from '../../layouts/Layout.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
 
-export const prerender = true;
+const { slug } = Astro.params;
+const project = await getProjectBySlugRuntime(slug);
 
-export async function getStaticPaths() {
-  const projecten = getAllProjects();
-  return projecten.map(project => ({
-    params: { slug: project.slug },
-    props: { project },
-  }));
+if (!project) {
+  return Astro.redirect('/404', 302);
 }
-
-const { project } = Astro.props;
 ---
 
 <Layout title={project.name} description={project.description}>
@@ -25,13 +21,7 @@ const { project } = Astro.props;
         <h1 class="text-4xl md:text-6xl font-bold mb-8">{project.name}</h1>
       </header>
 
-      {project.pictures.length > 0 && (
-        <div class="grid grid-cols-1 gap-8 mb-16">
-          {project.pictures.map((img: string) => (
-            <img src={img} alt={project.name} class="w-full h-auto" />
-          ))}
-        </div>
-      )}
+      <ProjectGallery pictures={project.pictures} projectName={project.name} />
 
       <div class="prose prose-lg max-w-none">
         <p class="text-xl leading-relaxed text-gray-600">{project.description}</p>

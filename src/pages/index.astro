@@ -1,5 +1,5 @@
 ---
-import { getAllProjects, getSiteContent } from '../lib/data';
+import { getAllProjects, getSiteContent, DEFAULT_IMAGE } from '../lib/data';
 import Layout from '../layouts/Layout.astro';
 
 export const prerender = true;
@@ -12,7 +12,7 @@ const recentProjects = getAllProjects().slice(0, 3);
 	<section class="py-20 md:py-32">
 		<div class="container mx-auto px-4">
 			<div class="max-w-3xl">
-				<h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">
+				<h1 class="text-4xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">
 					Binnen- & buitenschilderwerk <br />
 					<span class="text-gray-400">met oog voor detail.</span>
 				</h1>
@@ -47,7 +47,7 @@ const recentProjects = getAllProjects().slice(0, 3);
 						<div class="aspect-[4/5] bg-gray-200 mb-6 overflow-hidden">
 							<div
 								class="w-full h-full group-hover:scale-105 transition-transform duration-700 bg-cover bg-center"
-								style={`background-image: url('${project.pictures[0]}')`}
+								style={`background-image: url('${project.pictures[0] || DEFAULT_IMAGE}')`}
 							></div>
 						</div>
 						<h3 class="text-xl font-bold mb-1">{project.name}</h3>

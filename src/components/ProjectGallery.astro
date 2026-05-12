@@ -1,0 +1,329 @@
+---
+export interface Props {
+  pictures: string[];
+  projectName: string;
+}
+
+const { pictures, projectName } = Astro.props;
+const hasMultiple = pictures.length > 1;
+const picturesJson = JSON.stringify(pictures);
+---
+
+{pictures.length > 0 && (
+<section class="mb-16">
+    <div class="project-gallery" data-pictures={picturesJson}>
+      <!-- Hero Image -->
+      <button
+        id="hero-btn"
+        class="relative w-full aspect-[3/2] overflow-hidden rounded-lg bg-gray-100 group cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black mb-4"
+        aria-label={hasMultiple ? "Open galerij" : "Bekijk afbeelding"}
+      >
+        <img
+          id="hero-image"
+          src={pictures[0]}
+          alt={projectName}
+          class="w-full h-full object-cover transition-opacity duration-300"
+          loading="eager"
+        />
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+          <span class="opacity-0 group-hover:opacity-100 transition-opacity text-white text-sm font-medium bg-black/60 px-4 py-2 rounded-full pointer-events-none select-none">
+            Klik voor volledig scherm
+          </span>
+        </div>
+      </button>
+
+      <!-- Thumbnails -->
+      {hasMultiple && (
+        <div class="flex gap-2 overflow-x-auto pb-2" id="thumbnails">
+          {pictures.map((img, i) => (
+            <button
+              class:list={[
+                "flex-shrink-0 w-20 sm:w-24 aspect-[3/2] rounded-md overflow-hidden border-2 transition-all duration-200 bg-gray-100 focus:outline-none",
+                i === 0 ? "border-black" : "border-transparent hover:border-gray-300"
+              ]}
+              data-index={i}
+              aria-label={`Afbeelding ${i + 1} van ${pictures.length}`}
+            >
+              <img src={img} alt="" class="w-full h-full object-cover" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      <!-- Lightbox Overlay -->
+      <div
+        id="lightbox"
+        class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md transition-opacity duration-300 opacity-0"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Afbeeldingen galerij"
+      >
+        <button
+          id="lightbox-close"
+          class="absolute top-4 right-4 z-10 w-12 h-12 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+          aria-label="Sluiten"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="relative flex items-center justify-center w-full h-full p-4 sm:p-8">
+          {hasMultiple && (
+            <button
+              id="lightbox-prev"
+              class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/40 rounded-full"
+              aria-label="Vorige afbeelding"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+          )}
+
+          <img
+            id="lightbox-image"
+            src={pictures[0]}
+            alt={projectName}
+            class="max-w-full max-h-full object-contain transition-all duration-300 scale-95"
+            style="transition-property: opacity, transform;"
+          />
+
+          {hasMultiple && (
+            <button
+              id="lightbox-next"
+              class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/40 rounded-full"
+              aria-label="Volgende afbeelding"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {hasMultiple && (
+          <span
+            id="lightbox-counter"
+            class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white/70 text-sm font-medium bg-black/40 px-3 py-1 rounded-full pointer-events-none select-none"
+          >
+            1 / {pictures.length}
+          </span>
+        )}
+      </div>
+    </div>
+</section>
+)}
+
+<script>
+(function () {
+  var pics = (function () {
+    try {
+      var el = document.querySelector('.project-gallery');
+      return el ? JSON.parse(el.getAttribute('data-pictures')) : [];
+    } catch (e) {
+      return [];
+    }
+  })();
+
+  if (pics.length === 0) return;
+
+  var currentIndex = 0;
+  var lightboxOpen = false;
+  var autoplayTimer = null;
+
+  var heroBtn = document.getElementById('hero-btn');
+  var heroImage = document.getElementById('hero-image');
+  var thumbnailsEl = document.getElementById('thumbnails');
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImage = document.getElementById('lightbox-image');
+  var lightboxClose = document.getElementById('lightbox-close');
+  var lightboxPrev = document.getElementById('lightbox-prev');
+  var lightboxNext = document.getElementById('lightbox-next');
+  var lightboxCounter = document.getElementById('lightbox-counter');
+  var gallery = document.querySelector('.project-gallery');
+
+  function setHeroImage(index) {
+    currentIndex = index;
+    var src = pics[index];
+    if (!src) return;
+    heroImage.style.opacity = '0';
+    var preloader = new Image();
+    preloader.onload = function () {
+      heroImage.src = src;
+      heroImage.style.opacity = '1';
+    };
+    preloader.onerror = function () {
+      heroImage.src = src;
+      heroImage.style.opacity = '1';
+    };
+    preloader.src = src;
+    updateThumbnails();
+  }
+
+  function setLightboxImage(index) {
+    currentIndex = index;
+    var src = pics[index];
+    if (!src) return;
+    lightboxImage.style.opacity = '0';
+    var preloader = new Image();
+    preloader.onload = function () {
+      lightboxImage.src = src;
+      lightboxImage.style.opacity = '1';
+    };
+    preloader.onerror = function () {
+      lightboxImage.src = src;
+      lightboxImage.style.opacity = '1';
+    };
+    preloader.src = src;
+    if (lightboxCounter) {
+      lightboxCounter.textContent = (index + 1) + ' / ' + pics.length;
+    }
+  }
+
+  function updateThumbnails() {
+    if (!thumbnailsEl) return;
+    var btns = thumbnailsEl.querySelectorAll('button');
+    btns.forEach(function (btn, i) {
+      btn.classList.toggle('border-black', i === currentIndex);
+      btn.classList.toggle('border-transparent', i !== currentIndex);
+      if (i !== currentIndex) {
+        btn.classList.add('hover:border-gray-300');
+      } else {
+        btn.classList.remove('hover:border-gray-300');
+      }
+    });
+  }
+
+  function goNext() {
+    var next = (currentIndex + 1) % pics.length;
+    if (lightboxOpen) {
+      setLightboxImage(next);
+    } else {
+      setHeroImage(next);
+    }
+  }
+
+  function goPrev() {
+    var prev = (currentIndex - 1 + pics.length) % pics.length;
+    if (lightboxOpen) {
+      setLightboxImage(prev);
+    } else {
+      setHeroImage(prev);
+    }
+  }
+
+  function openLightbox(index) {
+    currentIndex = index;
+    lightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+    lightbox.classList.remove('hidden');
+    requestAnimationFrame(function () {
+      lightbox.classList.remove('opacity-0');
+      lightboxImage.classList.remove('scale-95');
+    });
+    setLightboxImage(currentIndex);
+    stopAutoplay();
+  }
+
+  function closeLightbox() {
+    lightboxOpen = false;
+    document.body.style.overflow = '';
+    lightbox.classList.add('opacity-0');
+    lightboxImage.classList.add('scale-95');
+    setTimeout(function () {
+      lightbox.classList.add('hidden');
+    }, 300);
+    setHeroImage(currentIndex);
+    startAutoplay();
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    if (pics.length > 1) {
+      autoplayTimer = setInterval(goNext, 5000);
+    }
+  }
+
+  function stopAutoplay() {
+    if (autoplayTimer) {
+      clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+  }
+
+  heroBtn.addEventListener('click', function () {
+    openLightbox(currentIndex);
+  });
+
+  if (thumbnailsEl) {
+    thumbnailsEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      var index = parseInt(btn.getAttribute('data-index'), 10);
+      if (!isNaN(index)) {
+        setHeroImage(index);
+        stopAutoplay();
+        startAutoplay();
+      }
+    });
+  }
+
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  lightboxClose.addEventListener('click', function (e) {
+    e.stopPropagation();
+    closeLightbox();
+  });
+
+  lightboxImage.addEventListener('click', function (e) {
+    if (pics.length > 1) {
+      e.stopPropagation();
+      goNext();
+    }
+  });
+
+  if (lightboxPrev) {
+    lightboxPrev.addEventListener('click', function (e) {
+      e.stopPropagation();
+      goPrev();
+    });
+  }
+
+  if (lightboxNext) {
+    lightboxNext.addEventListener('click', function (e) {
+      e.stopPropagation();
+      goNext();
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (!lightboxOpen) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLightbox();
+    }
+    if (e.key === 'ArrowRight' && pics.length > 1) {
+      e.preventDefault();
+      goNext();
+    }
+    if (e.key === 'ArrowLeft' && pics.length > 1) {
+      e.preventDefault();
+      goPrev();
+    }
+  });
+
+  if (gallery) {
+    gallery.addEventListener('mouseenter', stopAutoplay);
+    gallery.addEventListener('mouseleave', startAutoplay);
+    gallery.addEventListener('touchstart', stopAutoplay);
+  }
+
+  startAutoplay();
+})();
+</script>

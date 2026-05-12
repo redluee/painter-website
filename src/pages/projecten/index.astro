@@ -1,5 +1,5 @@
 ---
-import { getAllProjects } from '../../lib/data';
+import { getAllProjects, DEFAULT_IMAGE } from '../../lib/data';
 import Layout from '../../layouts/Layout.astro';
 
 export const prerender = true;
@@ -16,15 +16,11 @@ const projecten = getAllProjects();
         {projecten.map(project => (
           <a href={`/projecten/${project.slug}`} class="group">
             <div class="aspect-[4/5] bg-gray-100 mb-6 overflow-hidden">
-              {project.pictures[0] ? (
-                <img 
-                  src={project.pictures[0]} 
-                  alt={project.name} 
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              ) : (
-                <div class="w-full h-full flex items-center justify-center text-gray-300">Geen afbeelding</div>
-              )}
+              <img 
+                src={project.pictures[0] || DEFAULT_IMAGE} 
+                alt={project.name} 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
             </div>
             <h2 class="text-xl font-bold mb-1 group-hover:text-gray-600 transition-colors">{project.name}</h2>
             <p class="text-sm text-gray-500 uppercase tracking-widest">{project.paintType.join(', ')}</p>

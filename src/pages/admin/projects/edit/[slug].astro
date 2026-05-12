@@ -1,0 +1,260 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Project bewerken">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Project bewerken</h2>
+
+    <form id="project-form" class="space-y-6">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Projectnaam</label>
+        <input type="text" id="name" required
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" />
+      </div>
+
+      <div>
+        <label for="paintType" class="block text-sm font-medium text-gray-700 mb-1">Type verfwerk (komma-gescheiden)</label>
+        <input type="text" id="paintType"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+          placeholder="Bijv. buiten, historisch" />
+      </div>
+
+      <div>
+        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
+        <textarea id="description" rows="5" required
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Afbeeldingen</label>
+        <div id="existing-images" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4"></div>
+        <div
+          id="dropzone"
+          class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-gray-400 transition-colors"
+        >
+          <p class="text-sm text-gray-500 mb-1">Sleep nieuwe afbeeldingen hierheen of klik om te uploaden</p>
+          <p class="text-xs text-gray-400">JPG, PNG, WebP of AVIF (max 10 MB per stuk)</p>
+        </div>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/avif" multiple class="hidden" />
+      </div>
+
+      <p id="error-message" class="text-sm text-red-600 hidden" role="alert"></p>
+      <p id="success-message" class="text-sm text-green-600 hidden" role="status"></p>
+
+      <div class="flex gap-3">
+        <button type="submit"
+          class="px-8 py-3 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">
+          Opslaan
+        </button>
+        <a href="/admin/projects"
+          class="px-8 py-3 border border-gray-300 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors">
+          Annuleren
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('project-form');
+    const errorEl = document.getElementById('error-message');
+    const successEl = document.getElementById('success-message');
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const existingImages = document.getElementById('existing-images');
+    let currentPictures = [];
+    let draggedUrl = null;
+    const slug = window.location.pathname.split('/').pop();
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+      successEl.classList.add('hidden');
+    }
+
+    function showSuccess(msg) {
+      successEl.textContent = msg;
+      successEl.classList.remove('hidden');
+      errorEl.classList.add('hidden');
+    }
+
+    function hideMessages() {
+      errorEl.classList.add('hidden');
+      successEl.classList.add('hidden');
+    }
+
+    function renderExistingImages() {
+      existingImages.innerHTML = currentPictures.map((url, i) => `
+        <div class="relative group aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 cursor-grab" 
+             draggable="true" data-url="${url}">
+          ${i === 0 ? '<span class="absolute top-2 left-2 z-10 px-2 py-0.5 bg-black/70 text-white text-xs rounded pointer-events-none">Primair</span>' : ''}
+          <img src="${url}" class="w-full h-full object-cover pointer-events-none" alt="" />
+          <button type="button" data-url="${url}"
+            class="delete-img absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-full text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-10">&times;</button>
+        </div>
+      `).join('');
+
+      existingImages.querySelectorAll('.delete-img').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPictures = currentPictures.filter(u => u !== btn.dataset.url);
+          renderExistingImages();
+        });
+      });
+    }
+
+    existingImages.addEventListener('dragstart', (e) => {
+      const item = e.target.closest('[draggable]');
+      if (!item) return;
+      draggedUrl = item.dataset.url;
+      e.dataTransfer.effectAllowed = 'move';
+      item.classList.add('opacity-50');
+    });
+
+    existingImages.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const item = e.target.closest('[draggable]');
+      if (item && item.dataset.url !== draggedUrl) {
+        item.classList.add('ring-2', 'ring-black');
+      }
+    });
+
+    existingImages.addEventListener('dragleave', (e) => {
+      const item = e.target.closest('[draggable]');
+      if (item) item.classList.remove('ring-2', 'ring-black');
+    });
+
+    existingImages.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const target = e.target.closest('[draggable]');
+      if (!target || !draggedUrl || target.dataset.url === draggedUrl) return;
+
+      const fromIndex = currentPictures.indexOf(draggedUrl);
+      const toIndex = currentPictures.indexOf(target.dataset.url);
+      if (fromIndex === -1 || toIndex === -1) return;
+
+      const [moved] = currentPictures.splice(fromIndex, 1);
+      currentPictures.splice(toIndex, 0, moved);
+      renderExistingImages();
+      draggedUrl = null;
+    });
+
+    existingImages.addEventListener('dragend', () => {
+      draggedUrl = null;
+      existingImages.querySelectorAll('[draggable]').forEach(el => {
+        el.classList.remove('opacity-50', 'ring-2', 'ring-black');
+      });
+    });
+
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-black');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-black');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-black');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    async function handleFiles(files) {
+      let skipped = 0;
+
+      for (const file of files) {
+        if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
+          skipped++;
+          continue;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          skipped++;
+          continue;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+          if (res.ok) {
+            const data = await res.json();
+            currentPictures.push(data.url);
+            renderExistingImages();
+          } else {
+            skipped++;
+          }
+        } catch {
+          skipped++;
+        }
+      }
+
+      if (skipped > 0) {
+        showError(`${skipped} bestand(en) overgeslagen (ongeldig type, te groot of upload mislukt).`);
+      } else {
+        hideError();
+      }
+    }
+
+    async function loadProject() {
+      try {
+        const res = await fetch(`/api/admin/projects/${slug}`);
+        if (!res.ok) throw new Error('Not found');
+        const project = await res.json();
+
+        document.getElementById('name').value = project.name;
+        document.getElementById('paintType').value = (project.paintType || []).join(', ');
+        document.getElementById('description').value = project.description;
+        currentPictures = project.pictures || [];
+        renderExistingImages();
+      } catch {
+        showError('Project niet gevonden.');
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideMessages();
+
+      const paintTypeRaw = document.getElementById('paintType').value;
+      const paintType = paintTypeRaw
+        ? paintTypeRaw.split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+
+      const payload = {
+        name: document.getElementById('name').value,
+        paintType,
+        description: document.getElementById('description').value,
+        pictures: currentPictures,
+      };
+
+      try {
+        const res = await fetch(`/api/admin/projects/${slug}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          const updated = await res.json();
+          window.location.href = `/admin/projects/edit/${updated.slug}`;
+        } else {
+          const data = await res.json();
+          showError(data.error || 'Opslaan mislukt');
+        }
+      } catch {
+        showError('Er is iets misgegaan.');
+      }
+    });
+
+    loadProject();
+  </script>
+</AdminLayout>

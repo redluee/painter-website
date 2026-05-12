@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Schilderen kerk",
+    "paintType": [
+      "Sikkens hoogglans 9003",
+      "Sikkens hoogglans 9010"
+    ],
+    "description": "Wij zijn een toegewijd team dat zich inzet om uitzonderlijke ervaringen te creëren. Onze focus ligt op het leveren van betrouwbare en innovatieve oplossingen, gedreven door respect voor kwaliteit en een oprechte wens om verwachtingen te overtreffen.\n\nVanaf ons bescheiden begin zijn we gegroeid door grote toewijding en een streven naar voortdurende verbetering. Elke stap heeft ons geloof in de kracht van samenwerking en het belang van integriteit versterkt. We zijn gepassioneerd over wat we doen en we vinden het geweldig om ons verhaal met jou te delen.\n",
+    "pictures": [
+      "/images/dji_0326-kopie-high-vfvzsn-1778594172579.webp",
+      "/images/pexels-polina-tankilevitch-5583061-1778596567137.webp"
+    ]
+  },
+  {
+    "name": "Renovatie villa",
+    "paintType": [
+      "Sikkens",
+      "Sigma"
+    ],
+    "description": "Dit is een beschrijving",
+    "pictures": [
+      "/images/dji_0343-kopie-high-fitgi3-1778596216333.webp",
+      "/images/dji_0300-kopie-high-w240rz-1778596212605.webp"
+    ]
+  },
+  {
+    "name": "Landhuis",
+    "paintType": [],
+    "description": "Een landhuis moest een nieuwe laklaag ontvangen.",
+    "pictures": []
+  }
+]
