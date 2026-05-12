@@ -15,7 +15,7 @@ const picturesJson = JSON.stringify(pictures);
       <!-- Hero Image -->
       <button
         id="hero-btn"
-        class="relative w-full aspect-[3/2] overflow-hidden rounded-lg bg-gray-100 group cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-black mb-4"
+        class="relative w-full aspect-[3/2] overflow-hidden rounded-lg bg-gray-100 group cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-1 mb-4"
         aria-label={hasMultiple ? "Open galerij" : "Bekijk afbeelding"}
       >
         <img
@@ -39,7 +39,7 @@ const picturesJson = JSON.stringify(pictures);
             <button
               class:list={[
                 "flex-shrink-0 w-20 sm:w-24 aspect-[3/2] rounded-md overflow-hidden border-2 transition-all duration-200 bg-gray-100 focus:outline-none",
-                i === 0 ? "border-black" : "border-transparent hover:border-gray-300"
+                i === 0 ? "border-accent-1" : "border-transparent hover:border-gray-300"
               ]}
               data-index={i}
               aria-label={`Afbeelding ${i + 1} van ${pictures.length}`}
@@ -186,7 +186,7 @@ const picturesJson = JSON.stringify(pictures);
     if (!thumbnailsEl) return;
     var btns = thumbnailsEl.querySelectorAll('button');
     btns.forEach(function (btn, i) {
-      btn.classList.toggle('border-black', i === currentIndex);
+      btn.classList.toggle('border-accent-1', i === currentIndex);
       btn.classList.toggle('border-transparent', i !== currentIndex);
       if (i !== currentIndex) {
         btn.classList.add('hover:border-gray-300');

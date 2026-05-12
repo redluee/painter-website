@@ -20,3 +20,10 @@ export interface SiteContent {
   personalMotivation: string;
   history: string;
 }
+
+export interface ThemeSettings {
+  accent1: string;
+  accent2: string;
+  sectionBg: string;
+  navbarBg: string;
+}

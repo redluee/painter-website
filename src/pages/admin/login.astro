@@ -9,6 +9,7 @@ const title = 'Inloggen';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title} | Admin</title>
+    <link rel="stylesheet" href="/api/theme.css" />
   </head>
   <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-sm">
@@ -25,7 +26,7 @@ const title = 'Inloggen';
               name="email"
               required
               autocomplete="email"
-              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"
               placeholder="admin@voorbeeld.nl"
             />
           </div>
@@ -38,7 +39,7 @@ const title = 'Inloggen';
               name="password"
               required
               autocomplete="current-password"
-              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"
               placeholder="••••••••"
             />
           </div>
@@ -47,7 +48,7 @@ const title = 'Inloggen';
 
           <button
             type="submit"
-            class="w-full py-3 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors"
+            class="w-full py-3 bg-accent-1 text-white text-sm font-medium rounded-xl hover:bg-accent-2 transition-colors"
           >
             Inloggen
           </button>
