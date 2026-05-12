@@ -1,5 +1,11 @@
 ---
+import { getAllProjects, getSiteContent } from '../lib/data';
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
+
+const { businessInfo } = getSiteContent();
+const recentProjects = getAllProjects().slice(0, 3);
 ---
 
 <Layout title="Home">
@@ -7,16 +13,15 @@ import Layout from '../layouts/Layout.astro';
 		<div class="container mx-auto px-4">
 			<div class="max-w-3xl">
 				<h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">
-					Kwaliteitsschilderwerk <br />
+					Binnen- & buitenschilderwerk <br />
 					<span class="text-gray-400">met oog voor detail.</span>
 				</h1>
 				<p class="text-xl text-gray-600 mb-12 leading-relaxed">
-					Wij transformeren woningen en bedrijfspanden met passie en vakmanschap. 
-					Van historisch buitenschilderwerk tot strakke binnenafwerking.
+					{businessInfo.intro}
 				</p>
 				<div class="flex flex-col sm:flex-row gap-4">
 					<a href="/projecten" class="px-8 py-4 bg-black text-white font-medium rounded-full text-center hover:bg-gray-800 transition-colors">
-						Bekijk ons werk
+						Bekijk mijn werk
 					</a>
 					<a href="/contact" class="px-8 py-4 bg-white border border-gray-200 text-black font-medium rounded-full text-center hover:bg-gray-50 transition-colors">
 						Neem contact op
@@ -31,34 +36,24 @@ import Layout from '../layouts/Layout.astro';
 			<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
 				<div>
 					<h2 class="text-3xl font-bold mb-4">Recente Projecten</h2>
-					<p class="text-gray-500">Ontdek onze laatste realisaties in de regio.</p>
+					<p class="text-gray-500">Ontdek mijn laatste realisaties in de regio.</p>
 				</div>
 				<a href="/projecten" class="text-sm font-bold uppercase tracking-widest border-b-2 border-black pb-1">Alle projecten</a>
 			</div>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-				{/* Project cards placeholder */}
-				<div class="group cursor-pointer">
-					<div class="aspect-[4/5] bg-gray-200 mb-6 overflow-hidden">
-						<div class="w-full h-full group-hover:scale-105 transition-transform duration-700 bg-[url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center"></div>
-					</div>
-					<h3 class="text-xl font-bold mb-1">Modern Appartement</h3>
-					<p class="text-sm text-gray-500">Binnenschilderwerk • Amsterdam</p>
-				</div>
-				<div class="group cursor-pointer">
-					<div class="aspect-[4/5] bg-gray-200 mb-6 overflow-hidden">
-						<div class="w-full h-full group-hover:scale-105 transition-transform duration-700 bg-[url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center"></div>
-					</div>
-					<h3 class="text-xl font-bold mb-1">Klassieke Villa</h3>
-					<p class="text-sm text-gray-500">Buitenschilderwerk • Utrecht</p>
-				</div>
-				<div class="group cursor-pointer">
-					<div class="aspect-[4/5] bg-gray-200 mb-6 overflow-hidden">
-						<div class="w-full h-full group-hover:scale-105 transition-transform duration-700 bg-[url('https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center"></div>
-					</div>
-					<h3 class="text-xl font-bold mb-1">Bedrijfspand</h3>
-					<p class="text-sm text-gray-500">Zakelijk • Rotterdam</p>
-				</div>
+				{recentProjects.map(project => (
+					<a href={`/projecten/${project.slug}`} class="group cursor-pointer">
+						<div class="aspect-[4/5] bg-gray-200 mb-6 overflow-hidden">
+							<div
+								class="w-full h-full group-hover:scale-105 transition-transform duration-700 bg-cover bg-center"
+								style={`background-image: url('${project.pictures[0]}')`}
+							></div>
+						</div>
+						<h3 class="text-xl font-bold mb-1">{project.name}</h3>
+						<p class="text-sm text-gray-500">{project.paintType.join(', ')}</p>
+					</a>
+				))}
 			</div>
 		</div>
 	</section>

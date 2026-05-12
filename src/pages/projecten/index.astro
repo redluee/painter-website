@@ -1,38 +1,35 @@
 ---
-import { getCollection } from 'astro:content';
+import { getAllProjects } from '../../lib/data';
 import Layout from '../../layouts/Layout.astro';
 
-const projecten = await getCollection('projecten');
-const sortedProjecten = projecten.sort((a, b) => b.data.datum.getTime() - a.data.datum.getTime());
+export const prerender = true;
+
+const projecten = getAllProjects();
 ---
 
-<Layout title="Projecten" description="Overzicht van ons recente schilderwerk.">
+<Layout title="Projecten" description="Overzicht van mijn recente schilderwerk.">
   <section class="py-20">
     <div class="container mx-auto px-4">
       <h1 class="text-5xl font-bold mb-12">Projecten</h1>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        {sortedProjecten.length > 0 ? (
-          sortedProjecten.map(project => (
-            <a href={`/projecten/${project.slug}`} class="group">
-              <div class="aspect-[4/5] bg-gray-100 mb-6 overflow-hidden">
-                {project.data.afbeeldingen && project.data.afbeeldingen[0] ? (
-                  <img 
-                    src={project.data.afbeeldingen[0]} 
-                    alt={project.data.titel} 
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                ) : (
-                  <div class="w-full h-full flex items-center justify-center text-gray-300">Geen afbeelding</div>
-                )}
-              </div>
-              <h2 class="text-xl font-bold mb-1 group-hover:text-gray-600 transition-colors">{project.data.titel}</h2>
-              <p class="text-sm text-gray-500 uppercase tracking-widest">{project.data.categorie}</p>
-            </a>
-          ))
-        ) : (
-          <p class="text-gray-500 col-span-full">Nog geen projecten toegevoegd.</p>
-        )}
+        {projecten.map(project => (
+          <a href={`/projecten/${project.slug}`} class="group">
+            <div class="aspect-[4/5] bg-gray-100 mb-6 overflow-hidden">
+              {project.pictures[0] ? (
+                <img 
+                  src={project.pictures[0]} 
+                  alt={project.name} 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center text-gray-300">Geen afbeelding</div>
+              )}
+            </div>
+            <h2 class="text-xl font-bold mb-1 group-hover:text-gray-600 transition-colors">{project.name}</h2>
+            <p class="text-sm text-gray-500 uppercase tracking-widest">{project.paintType.join(', ')}</p>
+          </a>
+        ))}
       </div>
     </div>
   </section>

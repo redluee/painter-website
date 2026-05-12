@@ -1,30 +1,35 @@
 ---
+import { getSiteContent } from '../lib/data';
 import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
+
+const { businessInfo } = getSiteContent();
 ---
 
-<Layout title="Contact" description="Neem contact met ons op voor een vrijblijvende offerte.">
+<Layout title="Contact" description="Neem contact op voor een vrijblijvende offerte.">
   <section class="py-20">
     <div class="container mx-auto px-4">
       <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20">
         <div>
           <h1 class="text-5xl font-bold mb-8">Laten we praten over uw project.</h1>
           <p class="text-xl text-gray-600 mb-12 leading-relaxed">
-            Heeft u een vraag over ons schilderwerk of wilt u direct een offerte aanvragen? 
+            Heeft u een vraag over mijn schilderwerk of wilt u direct een offerte aanvragen?
             Vul het formulier in of neem direct contact op via onderstaande gegevens.
           </p>
 
           <div class="space-y-8">
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Bel ons</h3>
-              <p class="text-xl">+31 6 12345678</p>
+              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Bel mij</h3>
+              <p class="text-xl">{businessInfo.phone}</p>
             </div>
             <div>
-              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">E-mail ons</h3>
-              <p class="text-xl">info@schildernaam.nl</p>
+              <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">E-mail mij</h3>
+              <p class="text-xl">{businessInfo.email}</p>
             </div>
             <div>
               <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Locatie</h3>
-              <p class="text-xl">Regio Utrecht & omstreken</p>
+              <p class="text-xl">{businessInfo.location}</p>
             </div>
           </div>
         </div>
@@ -33,29 +38,29 @@ import Layout from '../layouts/Layout.astro';
           <form action="/api/contact" method="POST" class="space-y-6">
             <div>
               <label for="name" class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Volledige Naam</label>
-              <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                required 
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
                 class="w-full px-4 py-3 bg-white border border-gray-200 focus:outline-none focus:border-black transition-colors"
               />
             </div>
             <div>
               <label for="email" class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">E-mailadres</label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                required 
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
                 class="w-full px-4 py-3 bg-white border border-gray-200 focus:outline-none focus:border-black transition-colors"
               />
             </div>
             <div>
               <label for="subject" class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Onderwerp</label>
-              <select 
-                id="subject" 
-                name="subject" 
+              <select
+                id="subject"
+                name="subject"
                 class="w-full px-4 py-3 bg-white border border-gray-200 focus:outline-none focus:border-black transition-colors"
               >
                 <option value="offerte">Offerte aanvraag</option>
@@ -65,17 +70,13 @@ import Layout from '../layouts/Layout.astro';
             </div>
             <div>
               <label for="message" class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Uw bericht</label>
-              <textarea 
-                id="message" 
-                name="message" 
-                rows="5" 
-                required 
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                required
                 class="w-full px-4 py-3 bg-white border border-gray-200 focus:outline-none focus:border-black transition-colors"
               ></textarea>
-            </div>
-            
-            <div class="text-[10px] text-gray-400 mb-4">
-              Dit formulier is beschermd door Turnstile/reCAPTCHA.
             </div>
 
             <button type="submit" class="w-full py-4 bg-black text-white font-medium hover:bg-gray-800 transition-colors">

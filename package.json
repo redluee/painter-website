@@ -1,5 +1,5 @@
 {
-  "name": "terrestrial-telescope",
+  "name": "sebastiaanpeters",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -12,16 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.4",
     "@astrojs/vercel": "^10.0.6",
-    "@keystatic/astro": "^5.0.6",
-    "@keystatic/core": "^0.5.50",
     "@tailwindcss/vite": "^4.3.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "astro": "^6.3.1",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
     "tailwindcss": "^4.3.0"
   }
 }
