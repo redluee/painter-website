@@ -8,4 +8,4 @@ if (!password) {
 }
 
 const hash = await bcrypt.hash(password, 10);
-console.log(hash.replace(/\$/g, '\\$'));
+console.log(hash);
