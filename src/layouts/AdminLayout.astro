@@ -16,6 +16,11 @@ const currentPath = Astro.url.pathname;
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="/api/theme.css" />
     <title>{title} | Admin | Sebastiaan Peters</title>
+    <style>
+      .nav-active {
+        color: white !important;
+      }
+    </style>
   </head>
   <body class="bg-gray-50 min-h-screen">
     <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -30,10 +35,10 @@ const currentPath = Astro.url.pathname;
 
     <div class="max-w-7xl mx-auto px-4 py-8">
       <nav class="relative flex gap-1 mb-8 border-b border-gray-200 pb-4 overflow-x-auto" id="admin-nav">
-        <a
+         <a
           href="/admin/dashboard"
-          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
-            currentPath === '/admin/dashboard' ? 'text-white' : 'text-gray-600 hover:text-gray-900'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 ${
+            currentPath === '/admin/dashboard' ? 'nav-active' : ''
           }`}
           data-nav
         >
@@ -41,8 +46,8 @@ const currentPath = Astro.url.pathname;
         </a>
         <a
           href="/admin/content"
-          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
-            currentPath.startsWith('/admin/content') ? 'text-white' : 'text-gray-600 hover:text-gray-900'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 ${
+            currentPath.startsWith('/admin/content') ? 'nav-active' : ''
           }`}
           data-nav
         >
@@ -50,8 +55,8 @@ const currentPath = Astro.url.pathname;
         </a>
         <a
           href="/admin/projects"
-          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
-            currentPath.startsWith('/admin/projects') ? 'text-white' : 'text-gray-600 hover:text-gray-900'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 ${
+            currentPath.startsWith('/admin/projects') ? 'nav-active' : ''
           }`}
           data-nav
         >
@@ -59,8 +64,8 @@ const currentPath = Astro.url.pathname;
         </a>
         <a
           href="/admin/instellingen"
-          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
-            currentPath.startsWith('/admin/instellingen') ? 'text-white' : 'text-gray-600 hover:text-gray-900'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 ${
+            currentPath.startsWith('/admin/instellingen') ? 'nav-active' : ''
           }`}
           data-nav
         >
@@ -94,7 +99,7 @@ const currentPath = Astro.url.pathname;
         slider.style.transform = 'translateX(' + (er.left - nr.left) + 'px) translateY(' + (er.top - nr.top) + 'px)';
       }
 
-      var active = nav.querySelector('[data-nav].text-white');
+      var active = nav.querySelector('[data-nav].nav-active');
       if (active) {
         slider.style.transition = 'none';
         moveSlider(active);
@@ -102,9 +107,13 @@ const currentPath = Astro.url.pathname;
 
       nav.querySelectorAll('[data-nav]').forEach(function (link) {
         link.addEventListener('click', function (e) {
-          if (!link.classList.contains('text-white')) {
+          if (!link.classList.contains('nav-active')) {
             e.preventDefault();
             var href = link.getAttribute('href');
+            nav.querySelectorAll('[data-nav].nav-active').forEach(function (l) {
+              l.classList.remove('nav-active');
+            });
+            link.classList.add('nav-active');
             slider.style.transition = '';
             moveSlider(link);
             setTimeout(function () {
