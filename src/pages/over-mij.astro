@@ -10,31 +10,16 @@ const { aboutMe, businessInfo } = getSiteContent();
 <Layout title="Over mij" description="Lees meer over Sebastiaan Peters, professioneel binnen- en buitenschilder in de regio Utrecht.">
   <section class="py-20 md:py-32">
     <div class="container mx-auto px-4">
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">Over mij</h1>
-        <div class="prose prose-lg max-w-none text-gray-600">
-          <div set:html={aboutMe} class="space-y-6 [&>p]:text-xl [&>p]:leading-relaxed" />
+      <div class="max-w-4xl mx-auto flex flex-col md:block">
+        <img src="/sebastiaan-profiel.jpg" alt="Sebastiaan Peters" class="order-1 w-48 h-48 md:w-64 md:h-64 rounded-full object-cover float-none md:float-right mx-auto md:ml-6 mb-4 shadow-lg md:[shape-outside:circle(50%)] md:[shape-margin:1.5rem]" />
+        <h1 class="order-2 text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">Over mij</h1>
+        <div class="order-3 prose prose-lg max-w-none text-gray-600">
+          <div class="space-y-6 [&>p]:text-xl [&>p]:leading-relaxed">
+            <div set:html={aboutMe} />
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="py-20 bg-gray-50">
-    <div class="container mx-auto px-4">
-      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-        <div>
-          <h3 class="text-4xl font-bold mb-4">10+</h3>
-          <p class="text-gray-500">Jaar ervaring</p>
-        </div>
-        <div>
-          <h3 class="text-4xl font-bold mb-4">150+</h3>
-          <p class="text-gray-500">Projecten voltooid</p>
-        </div>
-        <div>
-          <h3 class="text-4xl font-bold mb-4">100%</h3>
-          <p class="text-gray-500">Tevreden klanten</p>
-        </div>
-      </div>
-    </div>
-  </section>
 </Layout>
