@@ -29,39 +29,47 @@ const currentPath = Astro.url.pathname;
     </header>
 
     <div class="max-w-7xl mx-auto px-4 py-8">
-      <nav class="flex gap-1 mb-8 border-b border-gray-200 pb-4 overflow-x-auto">
+      <nav class="relative flex gap-1 mb-8 border-b border-gray-200 pb-4 overflow-x-auto" id="admin-nav">
         <a
           href="/admin/dashboard"
-          class={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
-            currentPath === '/admin/dashboard' ? 'bg-accent-1 text-white' : 'text-gray-600 hover:bg-gray-100'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
+            currentPath === '/admin/dashboard' ? 'text-white' : 'text-gray-600 hover:text-gray-900'
           }`}
+          data-nav
         >
           Dashboard
         </a>
         <a
           href="/admin/content"
-          class={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
-            currentPath.startsWith('/admin/content') ? 'bg-accent-1 text-white' : 'text-gray-600 hover:bg-gray-100'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
+            currentPath.startsWith('/admin/content') ? 'text-white' : 'text-gray-600 hover:text-gray-900'
           }`}
+          data-nav
         >
           Inhoud
         </a>
         <a
           href="/admin/projects"
-          class={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
-            currentPath.startsWith('/admin/projects') ? 'bg-accent-1 text-white' : 'text-gray-600 hover:bg-gray-100'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
+            currentPath.startsWith('/admin/projects') ? 'text-white' : 'text-gray-600 hover:text-gray-900'
           }`}
+          data-nav
         >
           Projecten
         </a>
         <a
           href="/admin/instellingen"
-          class={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
-            currentPath.startsWith('/admin/instellingen') ? 'bg-accent-1 text-white' : 'text-gray-600 hover:bg-gray-100'
+          class={`px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 ${
+            currentPath.startsWith('/admin/instellingen') ? 'text-white' : 'text-gray-600 hover:text-gray-900'
           }`}
+          data-nav
         >
           Instellingen
         </a>
+        <div
+          id="nav-slider"
+          class="absolute top-0 left-0 bg-accent-1 rounded-lg pointer-events-none transition-all duration-300 ease-in-out"
+        ></div>
       </nav>
 
       <main>
@@ -73,6 +81,37 @@ const currentPath = Astro.url.pathname;
       document.getElementById('logout-btn')?.addEventListener('click', async () => {
         document.cookie = 'auth=; path=/; max-age=0';
         window.location.href = '/admin/login';
+      });
+
+      var slider = document.getElementById('nav-slider');
+      var nav = document.getElementById('admin-nav');
+
+      function moveSlider(el) {
+        var er = el.getBoundingClientRect();
+        var nr = nav.getBoundingClientRect();
+        slider.style.width = er.width + 'px';
+        slider.style.height = er.height + 'px';
+        slider.style.transform = 'translateX(' + (er.left - nr.left) + 'px) translateY(' + (er.top - nr.top) + 'px)';
+      }
+
+      var active = nav.querySelector('[data-nav].text-white');
+      if (active) {
+        slider.style.transition = 'none';
+        moveSlider(active);
+      }
+
+      nav.querySelectorAll('[data-nav]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          if (!link.classList.contains('text-white')) {
+            e.preventDefault();
+            var href = link.getAttribute('href');
+            slider.style.transition = '';
+            moveSlider(link);
+            setTimeout(function () {
+              window.location.href = href;
+            }, 300);
+          }
+        });
       });
     </script>
   </body>

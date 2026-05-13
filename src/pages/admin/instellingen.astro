@@ -9,7 +9,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <form id="settings-form" class="space-y-8">
       <fieldset>
         <legend class="text-lg font-semibold text-gray-900 mb-4">Accentkleuren</legend>
-        <p class="text-sm text-gray-500 mb-6">Pas de accentkleuren van de website aan. Wijzigingen zijn direct zichtbaar op de website.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -18,7 +17,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <input type="color" id="accent1" required
                 class="w-12 h-12 rounded-xl border border-gray-300 cursor-pointer" />
               <input type="text" id="accent1-hex" required
-                class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent uppercase"
+                class="flex-1 h-12 rounded-xl border border-gray-300 text-sm font-mono text-center uppercase transition-colors"
                 placeholder="#1C2B1E" maxlength="7" />
             </div>
           </div>
@@ -29,24 +28,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <input type="color" id="accent2" required
                 class="w-12 h-12 rounded-xl border border-gray-300 cursor-pointer" />
               <input type="text" id="accent2-hex" required
-                class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent uppercase"
+                class="flex-1 h-12 rounded-xl border border-gray-300 text-sm font-mono text-center uppercase transition-colors"
                 placeholder="#2A3D2C" maxlength="7" />
             </div>
-          </div>
-        </div>
-
-        <div class="mt-6 p-4 rounded-xl border border-gray-200">
-          <p class="text-sm font-medium text-gray-700 mb-3">Voorbeeld</p>
-          <div class="flex flex-wrap gap-3">
-            <span class="px-4 py-2 rounded-full text-white text-sm font-medium" style="background-color: var(--theme-accent-1, #1c2b1e)">Knoppen</span>
-            <span class="px-4 py-2 rounded-lg text-white text-sm font-medium" style="background-color: var(--theme-accent-2, #2a3d2c)">Hover</span>
           </div>
         </div>
       </fieldset>
 
       <fieldset>
         <legend class="text-lg font-semibold text-gray-900 mb-4">Achtergrondkleuren</legend>
-        <p class="text-sm text-gray-500 mb-6">Pas de achtergrondkleur van secties en de navigatiebalk aan.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -55,7 +45,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <input type="color" id="sectionBg" required
                 class="w-12 h-12 rounded-xl border border-gray-300 cursor-pointer" />
               <input type="text" id="sectionBg-hex" required
-                class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent uppercase"
+                class="flex-1 h-12 rounded-xl border border-gray-300 text-sm font-mono text-center uppercase transition-colors"
                 placeholder="#F0F5EE" maxlength="7" />
             </div>
           </div>
@@ -66,7 +56,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <input type="color" id="navbarBg" required
                 class="w-12 h-12 rounded-xl border border-gray-300 cursor-pointer" />
               <input type="text" id="navbarBg-hex" required
-                class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent uppercase"
+                class="flex-1 h-12 rounded-xl border border-gray-300 text-sm font-mono text-center uppercase transition-colors"
                 placeholder="#F0F5EE" maxlength="7" />
             </div>
           </div>
@@ -118,12 +108,25 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       successEl.classList.add('hidden');
     }
 
+    function updatePreview(input, hex) {
+      input.style.backgroundColor = hex;
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      input.style.color = luminance > 0.5 ? '#111827' : '#ffffff';
+    }
+
     colorInputs.forEach(({ color, hex }) => {
-      color.addEventListener('input', () => { hex.value = color.value; });
+      color.addEventListener('input', () => {
+        hex.value = color.value;
+        updatePreview(hex, color.value);
+      });
       hex.addEventListener('input', () => {
         const val = hex.value.trim();
         if (/^#[0-9a-fA-F]{6}$/.test(val)) {
           color.value = val.toLowerCase();
+          updatePreview(hex, val);
         }
       });
     });
@@ -140,6 +143,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (value) {
             color.value = value;
             hex.value = value.toUpperCase();
+            updatePreview(hex, value);
           }
         });
       } catch {
