@@ -18,7 +18,7 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { businessInfo, aboutMe } = body;
+    const { businessInfo, aboutMe, profileImage } = body;
 
     if (!businessInfo || !aboutMe || !aboutMe.trim()) {
       return new Response(
@@ -71,7 +71,11 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const content = { businessInfo, aboutMe: sanitizeRichText(aboutMe) };
+    const content = {
+      businessInfo,
+      aboutMe: sanitizeRichText(aboutMe),
+      profileImage: typeof profileImage === 'string' ? profileImage : '/sebastiaan-profiel.jpg',
+    };
     await writeSiteContent(content);
 
     return new Response(JSON.stringify({ success: true }));

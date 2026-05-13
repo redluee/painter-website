@@ -4,14 +4,14 @@ import Layout from '../layouts/Layout.astro';
 
 export const prerender = true;
 
-const { aboutMe, businessInfo } = getSiteContent();
+const { aboutMe, businessInfo, profileImage } = getSiteContent();
 ---
 
 <Layout title="Over mij" description="Lees meer over Sebastiaan Peters, professioneel binnen- en buitenschilder in de regio Utrecht.">
   <section class="py-20 md:py-32">
     <div class="container mx-auto px-4">
       <div class="max-w-4xl mx-auto flex flex-col md:block">
-        <img src="/sebastiaan-profiel.jpg" alt="Sebastiaan Peters" class="order-1 w-48 h-48 md:w-64 md:h-64 rounded-full object-cover float-none md:float-right mx-auto md:ml-6 mb-4 shadow-lg md:[shape-outside:circle(50%)] md:[shape-margin:1.5rem]" />
+        <img src={profileImage} alt="Sebastiaan Peters" class="order-1 w-48 h-48 md:w-64 md:h-64 rounded-full object-cover float-none md:float-right mx-auto md:ml-6 mb-4 shadow-lg md:[shape-outside:circle(50%)] md:[shape-margin:1.5rem]" />
         <h1 class="order-2 text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">Over mij</h1>
         <div class="order-3 prose prose-lg max-w-none text-gray-600">
           <div class="space-y-6 [&>p]:text-xl [&>p]:leading-relaxed">

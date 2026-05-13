@@ -18,6 +18,7 @@ export interface BusinessInfo {
 export interface SiteContent {
   businessInfo: BusinessInfo;
   aboutMe: string;
+  profileImage: string;
 }
 
 export interface ThemeSettings {
