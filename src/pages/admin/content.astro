@@ -39,26 +39,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         <div class="mt-4">
           <label for="intro" class="block text-sm font-medium text-gray-700 mb-1">Intro</label>
           <textarea id="intro" rows="3" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"></textarea>
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent resize-none"></textarea>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend class="text-lg font-semibold text-gray-900 mb-4">Motivatie</legend>
-        <div>
-          <label for="personalMotivation" class="block text-sm font-medium text-gray-700 mb-1">Persoonlijke motivatie</label>
-          <textarea id="personalMotivation" rows="5" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"></textarea>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend class="text-lg font-semibold text-gray-900 mb-4">Geschiedenis</legend>
-        <div>
-          <label for="history" class="block text-sm font-medium text-gray-700 mb-1">Geschiedenis</label>
-          <textarea id="history" rows="5" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"></textarea>
-        </div>
+        <legend class="text-lg font-semibold text-gray-900 mb-4">Over mij</legend>
+        <p class="text-sm text-gray-500 mb-3">Tekst op de "Over mij" pagina. Gebruik de toolbar of sneltoetsen (<strong>Ctrl+B</strong> voor vet, <strong>Ctrl+I</strong> voor cursief).</p>
+        <div id="aboutMe-editor" class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"></div>
       </fieldset>
 
       <p id="error-message" class="text-sm text-red-600 hidden" role="alert"></p>
@@ -77,10 +65,41 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </form>
   </div>
 
+  <style>
+    .quill-custom .ql-editor {
+      font-family: inherit;
+      font-size: 0.875rem;
+      line-height: 1.625;
+      min-height: 200px;
+    }
+    .quill-custom .ql-toolbar {
+      border-top-left-radius: 0.75rem;
+      border-top-right-radius: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .quill-custom .ql-container {
+      border: none;
+      font-family: inherit;
+    }
+  </style>
+
   <script>
+    import Quill from 'quill';
+    import 'quill/dist/quill.snow.css';
+
     const form = document.getElementById('content-form');
     const errorEl = document.getElementById('error-message');
     const successEl = document.getElementById('success-message');
+
+    const aboutMeEditor = new Quill('#aboutMe-editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic'],
+          ['clean'],
+        ],
+      },
+    });
 
     function showError(msg) {
       errorEl.textContent = msg;
@@ -111,8 +130,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('location').value = data.businessInfo.location;
         document.getElementById('kvk').value = data.businessInfo.kvk;
         document.getElementById('intro').value = data.businessInfo.intro;
-        document.getElementById('personalMotivation').value = data.personalMotivation;
-        document.getElementById('history').value = data.history;
+        aboutMeEditor.root.innerHTML = data.aboutMe || '';
       } catch {
         showError('Kon inhoud niet laden.');
       }
@@ -121,6 +139,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideMessages();
+
+      const aboutMeText = aboutMeEditor.getText().trim();
+      if (!aboutMeText) {
+        showError('Het veld "Over mij" is verplicht.');
+        return;
+      }
 
       const businessInfo = {
         name: document.getElementById('name').value,
@@ -133,8 +157,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       const payload = {
         businessInfo,
-        personalMotivation: document.getElementById('personalMotivation').value,
-        history: document.getElementById('history').value,
+        aboutMe: aboutMeEditor.root.innerHTML,
       };
 
       try {

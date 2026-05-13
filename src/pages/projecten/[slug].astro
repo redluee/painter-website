@@ -24,7 +24,7 @@ if (!project) {
       <ProjectGallery pictures={project.pictures} projectName={project.name} />
 
       <div class="prose prose-lg max-w-none">
-        <p class="text-xl leading-relaxed text-gray-600">{project.description}</p>
+        <div set:html={project.description} class="text-xl leading-relaxed text-gray-600 space-y-4 [&>p]:text-xl [&>p]:leading-relaxed" />
       </div>
 
       <footer class="mt-20 pt-12 border-t border-gray-100">

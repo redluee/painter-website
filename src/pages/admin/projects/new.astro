@@ -22,10 +22,9 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       </div>
 
       <div>
-        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
-        <textarea id="description" rows="5" required
-          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"
-          placeholder="Beschrijf het project..."></textarea>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Beschrijving</label>
+        <p class="text-xs text-gray-400 mb-2">Gebruik <strong>Ctrl+B</strong> voor vet, <strong>Ctrl+I</strong> voor cursief.</p>
+        <div id="description-editor" class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"></div>
       </div>
 
       <div>
@@ -56,7 +55,28 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     </form>
   </div>
 
+  <style>
+    .quill-custom .ql-editor {
+      font-family: inherit;
+      font-size: 0.875rem;
+      line-height: 1.625;
+      min-height: 150px;
+    }
+    .quill-custom .ql-toolbar {
+      border-top-left-radius: 0.75rem;
+      border-top-right-radius: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .quill-custom .ql-container {
+      border: none;
+      font-family: inherit;
+    }
+  </style>
+
   <script>
+    import Quill from 'quill';
+    import 'quill/dist/quill.snow.css';
+
     const form = document.getElementById('project-form');
     const errorEl = document.getElementById('error-message');
     const dropzone = document.getElementById('dropzone');
@@ -64,6 +84,16 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     const imagePreviews = document.getElementById('image-previews');
     let uploadedUrls = [];
     let draggedUrl = null;
+
+    const descriptionEditor = new Quill('#description-editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic'],
+          ['clean'],
+        ],
+      },
+    });
 
     function showError(msg) {
       errorEl.textContent = msg;
@@ -203,10 +233,16 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         ? paintTypeRaw.split(',').map(s => s.trim()).filter(Boolean)
         : [];
 
+      const descText = descriptionEditor.getText().trim();
+      if (!descText) {
+        showError('Het veld "Beschrijving" is verplicht.');
+        return;
+      }
+
       const payload = {
         name: document.getElementById('name').value,
         paintType,
-        description: document.getElementById('description').value,
+        description: descriptionEditor.root.innerHTML,
         pictures: uploadedUrls,
       };
 

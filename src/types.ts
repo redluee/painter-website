@@ -17,8 +17,7 @@ export interface BusinessInfo {
 
 export interface SiteContent {
   businessInfo: BusinessInfo;
-  personalMotivation: string;
-  history: string;
+  aboutMe: string;
 }
 
 export interface ThemeSettings {

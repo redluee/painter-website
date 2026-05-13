@@ -18,9 +18,9 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { businessInfo, personalMotivation, history } = body;
+    const { businessInfo, aboutMe } = body;
 
-    if (!businessInfo || !personalMotivation || !history) {
+    if (!businessInfo || !aboutMe || !aboutMe.trim()) {
       return new Response(
         JSON.stringify({ error: 'Alle velden zijn verplicht' }),
         { status: 400 },
@@ -36,7 +36,7 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const content = { businessInfo, personalMotivation, history };
+    const content = { businessInfo, aboutMe };
     await writeSiteContent(content);
 
     return new Response(JSON.stringify({ success: true }));
