@@ -1,9 +1,17 @@
 import fs from 'fs/promises';
 import path from 'path';
+import sanitizeHtml from 'sanitize-html';
 import type { Project, SiteContent } from '../types';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const IMAGES_DIR = path.resolve(process.cwd(), 'public/images');
+
+export function sanitizeRichText(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup'],
+    allowedAttributes: {},
+  });
+}
 
 export function slugify(name: string): string {
   return name
@@ -32,11 +40,10 @@ export async function readProjects(): Promise<Project[]> {
 
 export async function writeProjects(projects: Project[]): Promise<void> {
   const raw = projects.map(({ slug: _slug, ...rest }) => rest);
-  await fs.writeFile(
-    path.join(DATA_DIR, 'projects.json'),
-    JSON.stringify(raw, null, 2),
-    'utf-8',
-  );
+  const tmpPath = path.join(DATA_DIR, 'projects.json.tmp');
+  const targetPath = path.join(DATA_DIR, 'projects.json');
+  await fs.writeFile(tmpPath, JSON.stringify(raw, null, 2), 'utf-8');
+  await fs.rename(tmpPath, targetPath);
 }
 
 export async function readSiteContent(): Promise<SiteContent> {
@@ -45,11 +52,31 @@ export async function readSiteContent(): Promise<SiteContent> {
 }
 
 export async function writeSiteContent(content: SiteContent): Promise<void> {
-  await fs.writeFile(
-    path.join(DATA_DIR, 'content.json'),
-    JSON.stringify(content, null, 2),
-    'utf-8',
-  );
+  const tmpPath = path.join(DATA_DIR, 'content.json.tmp');
+  const targetPath = path.join(DATA_DIR, 'content.json');
+  await fs.writeFile(tmpPath, JSON.stringify(content, null, 2), 'utf-8');
+  await fs.rename(tmpPath, targetPath);
+}
+
+export async function appendContactSubmission(submission: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: string;
+}): Promise<void> {
+  const filePath = path.join(DATA_DIR, 'contact-submissions.json');
+  let submissions: unknown[] = [];
+  try {
+    const raw = await fs.readFile(filePath, 'utf-8');
+    submissions = JSON.parse(raw);
+  } catch {
+    // file doesn't exist yet, start fresh
+  }
+  submissions.push(submission);
+  const tmpPath = filePath + '.tmp';
+  await fs.writeFile(tmpPath, JSON.stringify(submissions, null, 2), 'utf-8');
+  await fs.rename(tmpPath, filePath);
 }
 
 export async function ensureImagesDir(): Promise<void> {

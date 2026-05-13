@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import sharp from 'sharp';
 import { saveImage } from '../../../lib/admin';
 
 export const prerender = false;
@@ -34,6 +35,17 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+
+    try {
+      const metadata = await sharp(buffer).metadata();
+      if (!metadata.format) throw new Error();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Ongeldig afbeeldingsbestand' }),
+        { status: 400 },
+      );
+    }
+
     const url = await saveImage(buffer, file.name);
 
     return new Response(JSON.stringify({ url }));

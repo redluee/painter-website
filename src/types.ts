@@ -25,4 +25,5 @@ export interface ThemeSettings {
   accent2: string;
   sectionBg: string;
   navbarBg: string;
+  tokenVersion: number;
 }

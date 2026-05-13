@@ -84,7 +84,11 @@ const currentPath = Astro.url.pathname;
 
     <script>
       document.getElementById('logout-btn')?.addEventListener('click', async () => {
-        document.cookie = 'auth=; path=/; max-age=0';
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+        } catch {
+          // still redirect even if server call fails
+        }
         window.location.href = '/admin/login';
       });
 

@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { readProjects, writeProjects, slugify } from '../../../../lib/admin';
+import { readProjects, writeProjects, slugify, sanitizeRichText } from '../../../../lib/admin';
 
 export const prerender = false;
 
@@ -27,6 +27,20 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    if (name.length > 200) {
+      return new Response(
+        JSON.stringify({ error: 'Projectnaam is te lang (max 200 karakters)' }),
+        { status: 400 },
+      );
+    }
+
+    if (description.length > 20000) {
+      return new Response(
+        JSON.stringify({ error: 'Beschrijving is te lang (max 20000 karakters)' }),
+        { status: 400 },
+      );
+    }
+
     const projects = await readProjects();
     const slug = slugify(name);
 
@@ -41,7 +55,7 @@ export const POST: APIRoute = async ({ request }) => {
       name,
       slug,
       paintType: Array.isArray(paintType) ? paintType : [],
-      description,
+      description: sanitizeRichText(description),
       pictures: Array.isArray(pictures) ? pictures : [],
     };
 

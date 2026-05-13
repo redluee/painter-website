@@ -4,6 +4,7 @@ import {
   writeProjects,
   deleteImageFile,
   slugify,
+  sanitizeRichText,
 } from '../../../../lib/admin';
 
 export const prerender = false;
@@ -50,6 +51,20 @@ export const PUT: APIRoute = async ({ request, params }) => {
       );
     }
 
+    if (name.length > 200) {
+      return new Response(
+        JSON.stringify({ error: 'Projectnaam is te lang (max 200 karakters)' }),
+        { status: 400 },
+      );
+    }
+
+    if (description.length > 20000) {
+      return new Response(
+        JSON.stringify({ error: 'Beschrijving is te lang (max 20000 karakters)' }),
+        { status: 400 },
+      );
+    }
+
     const newSlug = slugify(name);
 
     const duplicate = projects.findIndex(
@@ -74,7 +89,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
       name,
       slug: newSlug,
       paintType: Array.isArray(paintType) ? paintType : [],
-      description,
+      description: sanitizeRichText(description),
       pictures: newPictures,
     };
 

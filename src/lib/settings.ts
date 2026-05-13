@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS: ThemeSettings = {
   accent2: '#2a3d2c',
   sectionBg: '#F0F5EE',
   navbarBg: '#F0F5EE',
+  tokenVersion: 1,
 };
 
 export async function readThemeSettings(): Promise<ThemeSettings> {

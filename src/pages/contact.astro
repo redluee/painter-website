@@ -35,7 +35,7 @@ const { businessInfo } = getSiteContent();
         </div>
 
         <div class="bg-gray-50 p-8 md:p-12">
-          <form action="/api/contact" method="POST" class="space-y-6">
+          <form id="contact-form" class="space-y-6">
             <div>
               <label for="name" class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Volledige Naam</label>
               <input
@@ -79,11 +79,59 @@ const { businessInfo } = getSiteContent();
               ></textarea>
             </div>
 
-            <button type="submit" class="w-full py-4 bg-accent-1 text-white font-medium hover:bg-accent-2 transition-colors">
+            <p id="contact-error" class="text-sm text-red-600 hidden" role="alert"></p>
+            <p id="contact-success" class="text-sm text-green-600 hidden" role="status"></p>
+
+            <button type="submit" id="contact-submit" class="w-full py-4 bg-accent-1 text-white font-medium hover:bg-accent-2 transition-colors">
               Verstuur Bericht
             </button>
           </form>
         </div>
+
+        <script>
+          const form = document.getElementById('contact-form');
+          const errorEl = document.getElementById('contact-error');
+          const successEl = document.getElementById('contact-success');
+          const submitBtn = document.getElementById('contact-submit');
+
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verzenden...';
+
+            try {
+              const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  name: document.getElementById('name').value,
+                  email: document.getElementById('email').value,
+                  subject: document.getElementById('subject').value,
+                  message: document.getElementById('message').value,
+                }),
+              });
+
+              const data = await res.json();
+
+              if (res.ok) {
+                successEl.textContent = data.message || 'Bedankt! Uw bericht is verzonden.';
+                successEl.classList.remove('hidden');
+                form.reset();
+              } else {
+                errorEl.textContent = data.error || 'Verzenden mislukt.';
+                errorEl.classList.remove('hidden');
+              }
+            } catch {
+              errorEl.textContent = 'Er is iets misgegaan. Probeer het opnieuw.';
+              errorEl.classList.remove('hidden');
+            } finally {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Verstuur Bericht';
+            }
+          });
+        </script>
       </div>
     </div>
   </section>
