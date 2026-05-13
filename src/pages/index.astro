@@ -14,7 +14,7 @@ const recentProjects = getAllProjects().slice(0, 3);
 			<div class="max-w-3xl">
 				<h1 class="text-4xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1] select-none">
 					<span class="flex items-start">
-						<span class="text-[2.6em] leading-[0.8] flex-shrink-0 select-none">B</span>
+						<span class="text-[2.6em] leading-[0.8] shrink-0 select-none">B</span>
 						<span>innen- &<br />uitenschilderwerk</span>
 					</span>
 					<span class="relative inline-block mt-4">
@@ -46,14 +46,14 @@ const recentProjects = getAllProjects().slice(0, 3);
 				</div>
 				<a href="/projecten" class="group relative inline-block text-sm font-bold uppercase tracking-widest text-accent-1 pb-1 overflow-hidden">
 						Alle projecten
-						<span class="absolute bottom-0 right-0 h-[2px] bg-accent-1 transition-all duration-300 w-8 group-hover:w-full"></span>
+						<span class="absolute bottom-0 right-0 h-0.5 bg-accent-1 transition-all duration-300 w-8 group-hover:w-full"></span>
 					</a>
 			</div>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 				{recentProjects.map(project => (
 					<a href={`/projecten/${project.slug}`} class="group cursor-pointer">
-						<div class="aspect-[4/5] bg-gray-200 mb-6 overflow-hidden">
+						<div class="aspect-4/5 bg-gray-200 mb-6 overflow-hidden">
 							<div
 								class="w-full h-full group-hover:scale-105 transition-transform duration-700 bg-cover bg-center"
 								style={`background-image: url('${project.pictures[0] || DEFAULT_IMAGE}')`}
