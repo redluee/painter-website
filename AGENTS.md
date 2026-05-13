@@ -24,6 +24,12 @@ No lint/test/format scripts exist.
 ## Auth
 - JWT via `jose`, bcrypt via `bcryptjs`
 - Required env vars: `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, `JWT_SECRET`
+
+## Contact form & email
+- `POST /api/contact` saves submission to `data/contact-submissions.json` and sends email notification via Nodemailer
+- Email notification is best-effort (failure doesn't block the response)
+- Required env vars for email: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
+- Optional: `NOTIFICATION_EMAIL` (defaults to `info@sebastiaanpeters.nl`)
 - Cookie `auth`, httpOnly, 8h expiry
 - Middleware (`src/middleware.ts`) protects `/admin/*` and `/api/admin/*` (except `/admin/login`)
 
@@ -38,7 +44,7 @@ No lint/test/format scripts exist.
 - All images converted to WebP, max 1920px wide, quality 80, via `sharp`
 - Stored in `public/images/` as `<sanitized-name>-<timestamp>.webp`
 - Max upload 10 MB. Allowed types: `image/jpeg`, `image/png`, `image/webp`, `image/avif`
-- **Contact form** in `src/pages/contact.astro` posts to `/api/contact` — **no handler exists yet**
+- **Contact form** in `src/pages/contact.astro` posts to `/api/contact` — saves submission + sends email notification
 
 ## Styling
 - Tailwind CSS v4: only `@import "tailwindcss"` in `src/styles/global.css` (no `@tailwind` directives)

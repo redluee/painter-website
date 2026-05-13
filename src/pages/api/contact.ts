@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { appendContactSubmission } from '../../lib/admin';
+import { sendContactNotification } from '../../lib/email';
 
 export const prerender = false;
 
@@ -36,13 +37,21 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    await appendContactSubmission({
+    const submission = {
       name: name.trim(),
       email: email.trim(),
       subject: subject || 'offerte',
       message: message.trim(),
       createdAt: new Date().toISOString(),
-    });
+    };
+
+    await appendContactSubmission(submission);
+
+    try {
+      await sendContactNotification(submission);
+    } catch {
+      // Email notification is best-effort; don't break the response
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: 'Bedankt! Uw bericht is ontvangen.' }),
