@@ -11,6 +11,9 @@ const JWT_SECRET = new TextEncoder().encode(secret);
 const protectedPaths = ['/admin', '/api/admin'];
 const loginPath = '/admin/login';
 
+// 'unsafe-inline' is required for script and style because the Quill editor
+// injects inline styles and the mobile menu toggle uses inline event handlers.
+// A nonce-based approach would be ideal but isn't practical with Quill's dynamic DOM.
 const CSP = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
 
 function addSecurityHeaders(response: Response): Response {

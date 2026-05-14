@@ -2,43 +2,11 @@ import type { APIRoute } from 'astro';
 import { SignJWT } from 'jose';
 import bcrypt from 'bcryptjs';
 import { readThemeSettings } from '../../../lib/settings';
+import { createRateLimiter, getClientIp } from '../../../lib/shared';
 
 export const prerender = false;
 
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function getClientIp(request: Request): string {
-  return (
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    request.headers.get('x-real-ip') ||
-    'unknown'
-  );
-}
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return { allowed: true };
-  }
-
-  if (entry.count >= RATE_LIMIT_MAX) {
-    const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
-    return { allowed: false, retryAfter };
-  }
-
-  entry.count++;
-  return { allowed: true };
-}
-
-function clearRateLimit(ip: string): void {
-  rateLimitMap.delete(ip);
-}
+const loginLimiter = createRateLimiter(5, 15 * 60 * 1000);
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const ADMIN_EMAIL = import.meta.env.ADMIN_EMAIL;
@@ -52,7 +20,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   }
 
   const ip = getClientIp(request);
-  const { allowed, retryAfter } = checkRateLimit(ip);
+  const { allowed, retryAfter } = loginLimiter.check(ip);
 
   if (!allowed) {
     return new Response(
@@ -95,7 +63,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     );
   }
 
-  clearRateLimit(ip);
+  loginLimiter.clear(ip);
 
   const { tokenVersion } = await readThemeSettings();
 

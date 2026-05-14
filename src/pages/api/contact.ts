@@ -1,10 +1,27 @@
 import type { APIRoute } from 'astro';
 import { appendContactSubmission } from '../../lib/admin';
 import { sendContactNotification } from '../../lib/email';
+import { createRateLimiter, getClientIp } from '../../lib/shared';
 
 export const prerender = false;
 
+const contactLimiter = createRateLimiter(3, 60 * 1000);
+
 export const POST: APIRoute = async ({ request }) => {
+  const ip = getClientIp(request);
+  const { allowed, retryAfter } = contactLimiter.check(ip);
+  if (!allowed) {
+    return new Response(
+      JSON.stringify({ error: 'Te veel verzoeken. Probeer het later opnieuw.' }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': String(retryAfter),
+        },
+      },
+    );
+  }
   try {
     const body = await request.json();
     const { name, email, subject, message } = body;
