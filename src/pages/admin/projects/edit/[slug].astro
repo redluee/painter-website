@@ -292,7 +292,7 @@ import AdminLayout from '../../../../layouts/AdminLayout.astro';
       if (skipped > 0) {
         showError(`${skipped} bestand(en) overgeslagen (ongeldig type, te groot of upload mislukt).`);
       } else {
-        hideError();
+        hideMessages();
       }
     }
 

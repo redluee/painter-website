@@ -1,5 +1,4 @@
 import type { APIRoute } from 'astro';
-import type { ThemeSettings } from '../../../types';
 import { readThemeSettings, writeThemeSettings } from '../../../lib/settings';
 
 const HEX_REGEX = /^#[0-9a-fA-F]{6}$/;
@@ -32,7 +31,8 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    await writeThemeSettings({ accent1, accent2, sectionBg, navbarBg } as ThemeSettings);
+    const current = await readThemeSettings();
+    await writeThemeSettings({ ...current, accent1, accent2, sectionBg, navbarBg });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
