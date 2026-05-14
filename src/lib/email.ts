@@ -1,23 +1,37 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  host: import.meta.env.SMTP_HOST as string,
-  port: parseInt(import.meta.env.SMTP_PORT || '587', 10),
-  secure: parseInt(import.meta.env.SMTP_PORT || '587', 10) === 465,
-  auth: {
-    user: import.meta.env.SMTP_USER as string,
-    pass: import.meta.env.SMTP_PASS as string,
-  },
-});
-
-const notificationEmail =
-  (import.meta.env.NOTIFICATION_EMAIL as string) || 'info@sebastiaanpeters.nl';
-
 interface ContactSubmission {
   name: string;
   email: string;
   subject: string;
   message: string;
+}
+
+let transporter: any | null = null;
+
+function getTransporter() {
+  if (!transporter) {
+    const host = import.meta.env.SMTP_HOST as string;
+    const port = parseInt(import.meta.env.SMTP_PORT || '587', 10);
+    const user = import.meta.env.SMTP_USER as string;
+    const pass = import.meta.env.SMTP_PASS as string;
+
+    if (!host || !user || !pass) {
+      throw new Error('SMTP environment variables (SMTP_HOST, SMTP_USER, SMTP_PASS) are required for email sending');
+    }
+
+    transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+    });
+  }
+  return transporter;
+}
+
+function getNotificationEmail(): string {
+  return (import.meta.env.NOTIFICATION_EMAIL as string) || 'info@sebastiaanpeters.nl';
 }
 
 export async function sendContactNotification(
@@ -29,10 +43,10 @@ export async function sendContactNotification(
     anders: 'Anders',
   };
 
-  await transporter.sendMail({
+  await getTransporter().sendMail({
     from: `"Contactformulier" <${import.meta.env.SMTP_USER as string}>`,
     replyTo: submission.email,
-    to: notificationEmail,
+    to: getNotificationEmail(),
     subject: `Nieuwe ${subjectLabels[submission.subject] || submission.subject} van ${submission.name}`,
     html: `
       <h2>Nieuw contactformulier bericht</h2>
