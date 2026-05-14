@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import sanitizeHtml from 'sanitize-html';
 import type { Project, SiteContent } from '../types';
+import { slugify } from './shared';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const IMAGES_DIR = path.resolve(process.cwd(), 'public/images');
@@ -10,25 +11,10 @@ export function sanitizeRichText(html: string): string {
   return sanitizeHtml(html, {
     allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup', 'a', 'ul', 'ol', 'li'],
     allowedAttributes: { a: ['href'] },
+    allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+    allowedSchemesAppliedToAttributes: ['href'],
   });
 }
-
-export function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-}
-
-type RawProject = {
-  name: string;
-  paintType: string[];
-  description: string;
-  pictures: string[];
-  review?: { stars: number; description: string };
-};
 
 export async function readProjects(): Promise<Project[]> {
   const raw = await fs.readFile(path.join(DATA_DIR, 'projects.json'), 'utf-8');

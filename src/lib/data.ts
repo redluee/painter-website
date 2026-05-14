@@ -1,25 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
 import type { Project, SiteContent } from '../types';
+import type { RawProject } from './shared';
+import { slugify } from './shared';
 import rawProjects from '../../data/projects.json' with { type: 'json' };
 import rawContent from '../../data/content.json' with { type: 'json' };
-
-type RawProject = {
-  name: string;
-  paintType: string[];
-  description: string;
-  pictures: string[];
-  review?: { stars: number; description: string };
-};
-
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-}
 
 const projects: Project[] = (rawProjects as RawProject[]).map((p) => ({
   ...p,

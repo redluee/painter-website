@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { readProjects, writeProjects, slugify, sanitizeRichText } from '../../../../lib/admin';
+import { readProjects, writeProjects, sanitizeRichText } from '../../../../lib/admin';
+import { slugify } from '../../../../lib/shared';
 
 export const prerender = false;
 

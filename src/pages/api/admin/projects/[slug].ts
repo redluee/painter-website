@@ -3,9 +3,9 @@ import {
   readProjects,
   writeProjects,
   deleteImageFile,
-  slugify,
   sanitizeRichText,
 } from '../../../../lib/admin';
+import { slugify } from '../../../../lib/shared';
 
 export const prerender = false;
 
