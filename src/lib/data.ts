@@ -9,6 +9,7 @@ type RawProject = {
   paintType: string[];
   description: string;
   pictures: string[];
+  review?: { stars: number; description: string };
 };
 
 function slugify(name: string): string {

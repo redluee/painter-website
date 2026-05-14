@@ -42,7 +42,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
       );
     }
 
-    const { name, description, paintType, pictures } = body;
+    const { name, description, paintType, pictures, review } = body;
 
     if (!name || !description) {
       return new Response(
@@ -91,6 +91,9 @@ export const PUT: APIRoute = async ({ request, params }) => {
       paintType: Array.isArray(paintType) ? paintType : [],
       description: sanitizeRichText(description),
       pictures: newPictures,
+      review: review && typeof review.stars === 'number' && review.stars >= 1 && review.stars <= 5
+        ? { stars: review.stars, description: String(review.description ?? '') }
+        : undefined,
     };
 
     await writeProjects(projects);

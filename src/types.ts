@@ -4,6 +4,10 @@ export interface Project {
   paintType: string[];
   description: string;
   pictures: string[];
+  review?: {
+    stars: number;
+    description: string;
+  };
 }
 
 export interface BusinessInfo {

@@ -2,6 +2,7 @@
 import { getProjectBySlugRuntime, DEFAULT_IMAGE } from '../../lib/data';
 import Layout from '../../layouts/Layout.astro';
 import ProjectGallery from '../../components/ProjectGallery.astro';
+import StarRating from '../../components/StarRating.astro';
 
 const { slug } = Astro.params;
 const project = await getProjectBySlugRuntime(slug);
@@ -26,6 +27,14 @@ if (!project) {
       <div class="prose prose-lg max-w-none">
         <div set:html={project.description} class="text-xl leading-relaxed text-gray-600 space-y-4 [&>p]:text-xl [&>p]:leading-relaxed" />
       </div>
+
+      {project.review && (
+        <section class="mt-16 p-8 bg-gray-50 rounded-2xl border border-gray-100">
+          <h2 class="text-2xl font-bold mb-4">Wat de klant vond</h2>
+          <StarRating stars={project.review.stars} size={24} />
+          <p class="mt-4 text-lg text-gray-600 leading-relaxed italic">&ldquo;{project.review.description}&rdquo;</p>
+        </section>
+      )}
 
       <footer class="mt-20 pt-12 border-t border-gray-100">
         <div class="bg-gray-50 p-8 md:p-12 text-center">

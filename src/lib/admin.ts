@@ -27,6 +27,7 @@ type RawProject = {
   paintType: string[];
   description: string;
   pictures: string[];
+  review?: { stars: number; description: string };
 };
 
 export async function readProjects(): Promise<Project[]> {
