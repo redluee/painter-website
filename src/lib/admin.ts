@@ -8,8 +8,8 @@ const IMAGES_DIR = path.resolve(process.cwd(), 'public/images');
 
 export function sanitizeRichText(html: string): string {
   return sanitizeHtml(html, {
-    allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup'],
-    allowedAttributes: {},
+    allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup', 'a', 'ul', 'ol', 'li'],
+    allowedAttributes: { a: ['href'] },
   });
 }
 

@@ -18,6 +18,8 @@ export interface BusinessInfo {
 export interface SiteContent {
   businessInfo: BusinessInfo;
   aboutMe: string;
+  tarievenContent: string;
+  partnersContent: string;
   profileImage: string;
 }
 

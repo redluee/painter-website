@@ -18,9 +18,9 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { businessInfo, aboutMe, profileImage } = body;
+    const { businessInfo, aboutMe, tarievenContent, partnersContent, profileImage } = body;
 
-    if (!businessInfo || !aboutMe || !aboutMe.trim()) {
+    if (!businessInfo || !aboutMe || !aboutMe.trim() || !tarievenContent || !tarievenContent.trim() || !partnersContent || !partnersContent.trim()) {
       return new Response(
         JSON.stringify({ error: 'Alle velden zijn verplicht' }),
         { status: 400 },
@@ -71,9 +71,25 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    if (tarievenContent.length > 20000) {
+      return new Response(
+        JSON.stringify({ error: '"Tarieven" is te lang (max 20000 karakters)' }),
+        { status: 400 },
+      );
+    }
+
+    if (partnersContent.length > 20000) {
+      return new Response(
+        JSON.stringify({ error: '"Partners" is te lang (max 20000 karakters)' }),
+        { status: 400 },
+      );
+    }
+
     const content = {
       businessInfo,
       aboutMe: sanitizeRichText(aboutMe),
+      tarievenContent: sanitizeRichText(tarievenContent),
+      partnersContent: sanitizeRichText(partnersContent),
       profileImage: typeof profileImage === 'string' ? profileImage : '/sebastiaan-profiel.jpg',
     };
     await writeSiteContent(content);

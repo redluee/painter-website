@@ -10,7 +10,7 @@
 | `npm run dev` | Astro dev server |
 | `npm run build` | Production build |
 | `npm run preview` | Preview production build |
-| `node scripts/hash-password.mjs <pw>` | Generate bcrypt hash with `\$`-escaped `$` for `.env` |
+| `node scripts/hash-password.mjs <pw>` | Generate bcrypt hash for `.env` |
 
 No lint/test/format scripts exist.
 

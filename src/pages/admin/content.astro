@@ -107,6 +107,30 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 			<fieldset>
 				<legend class="text-lg font-semibold text-gray-900 mb-4"
+					>Tarieven</legend
+				>
+				<p class="text-sm text-gray-500 mb-3">Tekst op de Tarieven pagina.</p>
+				<div
+					id="tarieven-editor"
+					class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"
+				>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend class="text-lg font-semibold text-gray-900 mb-4"
+					>Partners</legend
+				>
+				<p class="text-sm text-gray-500 mb-3">Tekst op de Partners pagina.</p>
+				<div
+					id="partners-editor"
+					class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"
+				>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend class="text-lg font-semibold text-gray-900 mb-4"
 					>Profielafbeelding</legend
 				>
 				<p class="text-sm text-gray-500 mb-3">
@@ -259,7 +283,21 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 		const aboutMeEditor = new Quill("#aboutMe-editor", {
 			theme: "snow",
 			modules: {
-				toolbar: [["bold", "italic"], ["clean"]],
+				toolbar: [["bold", "italic", "link"], [{ list: "bullet" }], ["clean"]],
+			},
+		});
+
+		const tarievenEditor = new Quill("#tarieven-editor", {
+			theme: "snow",
+			modules: {
+				toolbar: [["bold", "italic", "underline", "link"], [{ list: "bullet" }], ["clean"]],
+			},
+		});
+
+		const partnersEditor = new Quill("#partners-editor", {
+			theme: "snow",
+			modules: {
+				toolbar: [["bold", "italic", "link"], [{ list: "bullet" }], ["clean"]],
 			},
 		});
 
@@ -293,6 +331,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 				document.getElementById("kvk").value = data.businessInfo.kvk;
 				document.getElementById("intro").value = data.businessInfo.intro;
 				aboutMeEditor.root.innerHTML = data.aboutMe || "";
+				tarievenEditor.root.innerHTML = data.tarievenContent || "";
+				partnersEditor.root.innerHTML = data.partnersContent || "";
 				if (data.profileImage) {
 					profileImageUrl = data.profileImage;
 					profileImg.src = profileImageUrl;
@@ -313,6 +353,18 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 				return;
 			}
 
+			const tarievenText = tarievenEditor.getText().trim();
+			if (!tarievenText) {
+				showError('Het veld "Tarieven" is verplicht.');
+				return;
+			}
+
+			const partnersText = partnersEditor.getText().trim();
+			if (!partnersText) {
+				showError('Het veld "Partners" is verplicht.');
+				return;
+			}
+
 			const businessInfo = {
 				name: document.getElementById("name").value,
 				phone: document.getElementById("phone").value,
@@ -325,6 +377,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 			const payload = {
 				businessInfo,
 				aboutMe: aboutMeEditor.root.innerHTML,
+				tarievenContent: tarievenEditor.root.innerHTML,
+				partnersContent: partnersEditor.root.innerHTML,
 				profileImage: profileImageUrl,
 			};
 

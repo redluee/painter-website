@@ -1,0 +1,23 @@
+---
+import { getSiteContent } from '../lib/data';
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
+
+const { tarievenContent } = getSiteContent();
+---
+
+<Layout title="Tarieven" description="Bekijk de tarieven voor professioneel binnen- en buitenschilderwerk. Vraag een gratis en vrijblijvende offerte aan.">
+  <section class="py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1]">Tarieven</h1>
+        <div class="prose prose-lg max-w-none text-gray-600">
+          <div class="space-y-6 [&>p]:text-xl [&>p]:leading-relaxed">
+            <div set:html={tarievenContent} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
