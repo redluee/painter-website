@@ -12,8 +12,8 @@ if (!project) {
 }
 ---
 
-<Layout title={project.name} description={project.description} image={project.pictures[0] || undefined}>
-  <article class="container mx-auto px-4 py-20">
+<Layout title={project.name} description={project.description?.replace(/<[^>]*>/g, '').slice(0, 160)} image={project.pictures[0] || undefined}>
+  <article class="mx-auto max-w-[1400px] px-6 py-20 md:py-28">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -25,30 +25,65 @@ if (!project) {
         ]
       }
     </script>
-    <div class="max-w-4xl mx-auto">
-      <header class="mb-12 reveal">
-        <div class="flex items-center gap-4 text-sm text-gray-500 uppercase tracking-widest mb-4">
-          <span>{project.paintType.join(' • ')}</span>
+
+    <div class="max-w-5xl mx-auto">
+      <header class="mb-16 reveal">
+        <div class="flex items-center gap-3 text-xs text-neutral-400 uppercase tracking-widest mb-4">
+          <a href="/projecten" class="hover:text-accent-1 transition-colors">Projecten</a>
+          <span>/</span>
+          <span class="text-accent-1">{project.name}</span>
         </div>
-        <h1 class="text-4xl md:text-6xl font-bold mb-8 text-balance">{project.name}</h1>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.95] text-balance">{project.name}</h1>
+        {project.paintType.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-6">
+            {project.paintType.map(type => (
+              <span class="inline-block px-3 py-1.5 bg-section-bg text-xs font-medium text-accent-1 rounded-full">{type}</span>
+            ))}
+          </div>
+        )}
       </header>
 
       <div class="reveal reveal-delay-1">
         <ProjectGallery pictures={project.pictures} projectName={project.name} />
       </div>
 
-      <div class="prose prose-lg max-w-none reveal reveal-delay-2">
-        <div set:html={project.description} class="text-xl leading-relaxed text-gray-600 space-y-4 [&>p]:text-xl [&>p]:leading-relaxed" />
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-12 mt-16">
+        <div class="md:col-span-3 reveal reveal-delay-2">
+          <div class="text-base leading-relaxed text-neutral-600 space-y-5 [&>p]:text-base [&>p]:leading-relaxed" set:html={project.description} />
+        </div>
+
+        <aside class="md:col-span-2">
+          {project.review && (
+            <div class="bg-section-bg p-6 reveal reveal-delay-3">
+              <p class="text-xs font-semibold uppercase tracking-widest text-accent-1 mb-3">Beoordeling</p>
+              <div class="mb-3">
+                <StarRating stars={project.review.stars} />
+              </div>
+              <p class="text-sm text-neutral-600 italic">&ldquo;{project.review.description}&rdquo;</p>
+            </div>
+          )}
+
+          <div class="border border-neutral-200 p-6 mt-6 reveal">
+            <p class="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-3">Projectinformatie</p>
+            <div class="space-y-3 text-sm text-neutral-600">
+              <div class="flex justify-between">
+                <span class="text-neutral-400">Verfsoort</span>
+                <span class="font-medium text-right">{project.paintType.join(', ') || 'Niet gespecificeerd'}</span>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <footer class="mt-20 pt-12 border-t border-gray-100 reveal reveal-delay-3">
-        <div class="bg-gray-50 p-8 md:p-12 text-center">
-          <h2 class="text-2xl font-bold mb-6">Interesse in een soortgelijk project?</h2>
-          <p class="text-gray-600 mb-8 max-w-xl mx-auto">
+      <footer class="mt-24 pt-16 border-t border-neutral-100 reveal">
+        <div class="max-w-2xl">
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Interesse in een soortgelijk project?</h2>
+          <p class="text-neutral-500 mb-8 leading-relaxed">
             Ik denk graag met u mee over de mogelijkheden voor uw woning of bedrijfspand.
           </p>
-          <a href="/contact" class="inline-block px-10 py-4 bg-accent-1 text-white font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-200">
-            Vraag een vrijblijvende offerte aan
+          <a href="/contact" class="inline-flex items-center justify-center px-8 py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+            Vraag een offerte aan
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
         </div>
       </footer>
