@@ -1,0 +1,44 @@
+---
+import { getSiteContent } from '../lib/data';
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = true;
+
+const { businessInfo } = getSiteContent();
+---
+
+<Layout title="Algemene voorwaarden" description="Algemene voorwaarden van Sebastiaan Peters Schilderwerk voor binnen- en buitenschilderwerk.">
+  <section class="py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1] text-balance reveal">Algemene voorwaarden</h1>
+        <div class="prose prose-lg max-w-none text-gray-600 reveal reveal-delay-1">
+          <div class="space-y-6 [&>p]:text-xl [&>p]:leading-relaxed">
+            <p>Deze algemene voorwaarden zijn van toepassing op alle offertes, werkzaamheden en leveringen van Sebastiaan Peters Schilderwerk, ingeschreven bij de Kamer van Koophandel onder nummer {businessInfo.kvk}.</p>
+
+            <h2>Offertes</h2>
+            <p>Alle offertes zijn vrijblijvend en blijven 30 dagen geldig, tenzij anders vermeld. Een overeenkomst komt tot stand na schriftelijke of elektronische acceptatie van de offerte.</p>
+
+            <h2>Uitvoering van werkzaamheden</h2>
+            <p>Wij voeren de werkzaamheden uit volgens de in de offerte beschreven specificaties. Eventuele meer- of minderwerk wordt vooraf met de opdrachtgever besproken en vastgelegd.</p>
+
+            <h2>Annulering</h2>
+            <p>Annulering van een opdracht dient schriftelijk te gebeuren. Bij annulering binnen 14 dagen voor aanvang van de werkzaamheden kunnen wij annuleringskosten in rekening brengen.</p>
+
+            <h2>Garantie</h2>
+            <p>Wij staan in voor de kwaliteit van ons werk en hanteren een garantietermijn van 2 jaar op uitgevoerd schilderwerk, conform de richtlijnen van het vakgebied. Schade door normale slijtage, verkeerd gebruik of onderhoud valt niet onder de garantie.</p>
+
+            <h2>Betaling</h2>
+            <p>Betaling dient te geschieden binnen 14 dagen na factuurdatum, tenzij anders overeengekomen. Bij niet-tijdige betaling zijn wij gerechtigd wettelijke rente en incassokosten in rekening te brengen.</p>
+
+            <h2>Aansprakelijkheid</h2>
+            <p>Onze aansprakelijkheid is beperkt tot het factuurbedrag van de opdracht. Wij zijn niet aansprakelijk voor indirecte schade, gevolgschade of bedrijfsschade.</p>
+
+            <h2>Toepasselijk recht</h2>
+            <p>Op deze algemene voorwaarden is Nederlands recht van toepassing. Geschillen worden voorgelegd aan de bevoegde rechter in Utrecht.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
