@@ -78,7 +78,7 @@ const fullTitle = `${title} | ${siteName}`;
 					<a href="/projecten" class:list={["text-sm font-medium transition-colors", currentPath.startsWith('/projecten') ? "text-accent-1" : "text-gray-900", "hover:text-gray-500"]}>Projecten</a>
 					<a href="/partners" class:list={["text-sm font-medium transition-colors", currentPath.startsWith('/partners') ? "text-accent-1" : "text-gray-900", "hover:text-gray-500"]}>Partners</a>
 					<a href="/tarieven" class:list={["text-sm font-medium transition-colors", currentPath.startsWith('/tarieven') ? "text-accent-1" : "text-gray-900", "hover:text-gray-500"]}>Tarieven</a>
-					<a href="/over-mij" class:list={["text-sm font-medium transition-colors", currentPath === '/over-mij' ? "text-accent-1" : "text-gray-900", "hover:text-gray-500"]}>Over mij</a>
+					<a href="/over-mij" class:list={["text-sm font-medium transition-colors", currentPath.startsWith('/over-mij') ? "text-accent-1" : "text-gray-900", "hover:text-gray-500"]}>Over mij</a>
 					<a href="/contact" class="px-5 py-2.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-200">
 						Vraag een offerte aan
 					</a>
@@ -96,7 +96,7 @@ const fullTitle = `${title} | ${siteName}`;
 					<a href="/projecten" class:list={["text-sm font-medium py-2 transition-colors", currentPath.startsWith('/projecten') ? "text-accent-1" : "", "hover:text-gray-500"]}>Projecten</a>
 					<a href="/partners" class:list={["text-sm font-medium py-2 transition-colors", currentPath.startsWith('/partners') ? "text-accent-1" : "", "hover:text-gray-500"]}>Partners</a>
 					<a href="/tarieven" class:list={["text-sm font-medium py-2 transition-colors", currentPath.startsWith('/tarieven') ? "text-accent-1" : "", "hover:text-gray-500"]}>Tarieven</a>
-					<a href="/over-mij" class:list={["text-sm font-medium py-2 transition-colors", currentPath === '/over-mij' ? "text-accent-1" : "", "hover:text-gray-500"]}>Over mij</a>
+					<a href="/over-mij" class:list={["text-sm font-medium py-2 transition-colors", currentPath.startsWith('/over-mij') ? "text-accent-1" : "", "hover:text-gray-500"]}>Over mij</a>
 					<a href="/contact" class="w-full py-3 bg-accent-1 text-white text-sm font-medium rounded-full text-center hover:bg-accent-2 active:scale-[0.97] transition-all duration-200">
 						Vraag een offerte aan
 					</a>
