@@ -16,9 +16,9 @@ const { tarievenContent } = getSiteContent();
           <h1 class="text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">Offerte op maat</h1>
         </div>
         <div class="lg:col-span-7 lg:col-start-6 reveal-right">
-          <div class="text-base leading-relaxed text-neutral-600 space-y-5 [&>p]:text-base [&>p]:leading-relaxed [&>ul]:space-y-3 [&>ul]:list-disc [&>ul>li]:ml-4" set:html={tarievenContent} />
+          <div class="text-base leading-relaxed text-neutral-600 space-y-5 max-w-2xl [&>p]:text-base [&>p]:leading-relaxed [&>ul]:space-y-3 [&>ul]:list-disc [&>ul>li]:ml-4" set:html={tarievenContent} />
           <div class="mt-12 pt-12 border-t border-neutral-100">
-            <a href="/contact" class="inline-flex items-center justify-center px-8 py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+            <a href="/contact" class="inline-flex items-center justify-center px-8 py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring">
               Vraag gratis offerte aan
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>

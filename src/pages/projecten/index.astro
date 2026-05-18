@@ -29,8 +29,7 @@ const restProjects = projecten.slice(1);
 								<img
 									src={firstProject.pictures[0] || DEFAULT_IMAGE}
 									alt={firstProject.name}
-									class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-									style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+									class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
 									loading="eager"
 								/>
 							</div>
@@ -60,8 +59,7 @@ const restProjects = projecten.slice(1);
 									<img
 										src={project.pictures[0] || DEFAULT_IMAGE}
 										alt={project.name}
-										class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-										style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+										class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
 										loading="lazy"
 									/>
 								</div>

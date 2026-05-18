@@ -28,11 +28,11 @@ const hasProjects = projects.length > 0;
 							{businessInfo.intro}
 						</p>
 						<div class="flex flex-col sm:flex-row gap-4 mt-10">
-							<a href="/contact" class="inline-flex items-center justify-center px-8 py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+							<a href="/contact" class="inline-flex items-center justify-center px-8 py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring">
 								Offerte aanvragen
 								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
 							</a>
-							<a href="/projecten" class="inline-flex items-center justify-center px-8 py-3.5 border border-neutral-200 text-neutral-700 text-sm font-medium rounded-full hover:border-accent-1 hover:text-accent-1 active:scale-[0.97] transition-all duration-300" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+							<a href="/projecten" class="inline-flex items-center justify-center px-8 py-3.5 border border-neutral-200 text-neutral-700 text-sm font-medium rounded-full hover:border-accent-1 hover:text-accent-1 active:scale-[0.97] transition-all duration-300 ease-spring">
 								Bekijk projecten
 							</a>
 						</div>
@@ -91,8 +91,7 @@ const hasProjects = projects.length > 0;
 									<img
 										src={project.pictures[0] || DEFAULT_IMAGE}
 										alt={project.name}
-										class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-										style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+										class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
 										loading={i === 0 ? 'eager' : 'lazy'}
 									/>
 									<div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -178,7 +177,7 @@ const hasProjects = projects.length > 0;
 				<p class="text-neutral-500 leading-relaxed mb-10 max-w-md mx-auto">
 					Vraag een vrijblijvende offerte aan en ik kom langs voor een persoonlijk gesprek.
 				</p>
-				<a href="/contact" class="inline-flex items-center justify-center px-10 py-4 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
+				<a href="/contact" class="inline-flex items-center justify-center px-10 py-4 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring">
 					Neem contact op
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
 				</a>

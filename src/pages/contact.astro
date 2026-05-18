@@ -65,8 +65,7 @@ const { businessInfo } = getSiteContent();
                 id="name"
                 name="name"
                 required
-                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 text-sm"
-                style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 ease-spring text-sm"
               />
               <p id="name-error" class="text-xs text-red-500 hidden mt-1" role="alert"></p>
             </div>
@@ -77,8 +76,7 @@ const { businessInfo } = getSiteContent();
                 id="email"
                 name="email"
                 required
-                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 text-sm"
-                style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 ease-spring text-sm"
               />
               <p id="email-error" class="text-xs text-red-500 hidden mt-1" role="alert"></p>
             </div>
@@ -87,8 +85,7 @@ const { businessInfo } = getSiteContent();
               <select
                 id="subject"
                 name="subject"
-                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 text-sm"
-                style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 ease-spring text-sm"
               >
                 <option value="offerte">Offerte aanvraag</option>
                 <option value="vraag">Algemene vraag</option>
@@ -102,8 +99,7 @@ const { businessInfo } = getSiteContent();
                 name="message"
                 rows="5"
                 required
-                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 text-sm resize-none"
-                style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);"
+                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 focus:outline-none focus:border-accent-1 focus:bg-white transition-all duration-300 ease-spring text-sm resize-none"
               ></textarea>
               <p id="message-error" class="text-xs text-red-500 hidden mt-1" role="alert"></p>
             </div>
@@ -111,8 +107,9 @@ const { businessInfo } = getSiteContent();
             <p id="contact-error" class="text-sm text-red-500 hidden" role="alert"></p>
             <p id="contact-success" class="text-sm text-accent-1 hidden" role="status"></p>
 
-            <button type="submit" id="contact-submit" class="w-full py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);">
-              Verstuur bericht
+            <button type="submit" id="contact-submit" class="w-full py-3.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring flex items-center justify-center gap-2">
+              <span id="submit-text">Verstuur bericht</span>
+              <svg id="submit-spinner" class="hidden animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
             </button>
           </form>
         </div>
@@ -174,7 +171,8 @@ const { businessInfo } = getSiteContent();
         if (!valid) return;
 
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Verzenden...';
+        document.getElementById('submit-text').textContent = 'Verzenden...';
+        document.getElementById('submit-spinner').classList.remove('hidden');
 
         try {
           const res = await fetch('/api/contact', {
@@ -208,7 +206,8 @@ const { businessInfo } = getSiteContent();
           errorEl.classList.remove('hidden');
         } finally {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Verstuur bericht';
+          document.getElementById('submit-text').textContent = 'Verstuur bericht';
+          document.getElementById('submit-spinner').classList.add('hidden');
         }
       });
     </script>
