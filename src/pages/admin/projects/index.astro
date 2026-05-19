@@ -19,16 +19,21 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
             <th class="text-left px-6 py-4 font-medium text-gray-500">Naam</th>
             <th class="text-left px-6 py-4 font-medium text-gray-500 hidden md:table-cell">Type</th>
             <th class="text-left px-6 py-4 font-medium text-gray-500 hidden sm:table-cell">Afbeeldingen</th>
+            <th class="text-left px-6 py-4 font-medium text-gray-500">Uitgelicht</th>
             <th class="text-right px-6 py-4 font-medium text-gray-500">Acties</th>
           </tr>
         </thead>
         <tbody id="projects-table-body">
           <tr>
-            <td colspan="4" class="px-6 py-12 text-center text-gray-400">Laden...</td>
+            <td colspan="5" class="px-6 py-12 text-center text-gray-400">Laden...</td>
           </tr>
         </tbody>
       </table>
     </div>
+  </div>
+
+  <div id="no-highlight-notice" class="hidden mt-3 text-sm text-gray-400 text-center">
+    Geen project gemarkeerd als uitgelicht. Het eerste project in de lijst wordt getoond op de homepage.
   </div>
 
   <div id="delete-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
@@ -50,6 +55,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
   <script>
     const tbody = document.getElementById('projects-table-body');
+    const noHighlightNotice = document.getElementById('no-highlight-notice');
     const deleteModal = document.getElementById('delete-modal');
     const deleteConfirm = document.getElementById('delete-confirm');
     const deleteCancel = document.getElementById('delete-cancel');
@@ -58,9 +64,11 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
     function renderProjects(projects) {
       if (projects.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-12 text-center text-gray-400">Geen projecten gevonden.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">Geen projecten gevonden.</td></tr>`;
         return;
       }
+
+      noHighlightNotice.classList.toggle('hidden', projects.some(p => p.highlighted));
 
       tbody.innerHTML = projects.map(p => `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
@@ -72,6 +80,13 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           </td>
           <td class="px-6 py-4 text-gray-500 hidden sm:table-cell">
             ${(p.pictures || []).length}
+          </td>
+          <td class="px-6 py-4">
+            <button onclick="toggleHighlight('${p.slug}', ${!p.highlighted})"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ${p.highlighted ? 'bg-accent-1/10 border-accent-1/30 text-accent-1' : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600'}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" ${p.highlighted ? 'fill="currentColor"' : 'fill="none"'} stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              ${p.highlighted ? 'Uitgelicht' : 'Highlight'}
+            </button>
           </td>
           <td class="px-6 py-4 text-right">
             <div class="flex gap-2 justify-end">
@@ -94,6 +109,20 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       div.textContent = str;
       return div.innerHTML;
     }
+
+    window.toggleHighlight = async function(slug, highlighted) {
+      try {
+        const res = await fetch(`/api/admin/projects/${slug}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ highlighted }),
+        });
+        if (res.ok) loadProjects();
+        else alert('Uitgelicht wijzigen mislukt.');
+      } catch {
+        alert('Er is iets misgegaan.');
+      }
+    };
 
     window.confirmDelete = function(slug, name) {
       deleteSlug = slug;
@@ -128,7 +157,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         const projects = await res.json();
         renderProjects(projects);
       } catch {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-12 text-center text-red-500">Laden mislukt.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-red-500">Laden mislukt.</td></tr>`;
       }
     }
 

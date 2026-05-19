@@ -42,7 +42,18 @@ export const PUT: APIRoute = async ({ request, params }) => {
       );
     }
 
-    const { name, description, paintType, pictures, review } = body;
+    const { name, description, paintType, pictures, review, highlighted } = body;
+
+    if (highlighted !== undefined && !name) {
+      projects[index].highlighted = highlighted === true || undefined;
+      if (highlighted === true) {
+        for (const p of projects) {
+          if (p.slug !== params.slug) p.highlighted = false;
+        }
+      }
+      await writeProjects(projects);
+      return new Response(JSON.stringify(projects[index]));
+    }
 
     if (!name || !description) {
       return new Response(
@@ -77,6 +88,16 @@ export const PUT: APIRoute = async ({ request, params }) => {
       );
     }
 
+    let newHighlighted = projects[index].highlighted;
+    if (highlighted === true) {
+      newHighlighted = true;
+      for (const p of projects) {
+        if (p.slug !== params.slug) p.highlighted = false;
+      }
+    } else if (highlighted === false) {
+      newHighlighted = false;
+    }
+
     const oldPictures = projects[index].pictures;
     const newPictures: string[] = Array.isArray(pictures) ? pictures : [];
 
@@ -91,6 +112,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
       paintType: Array.isArray(paintType) ? paintType : [],
       description: sanitizeRichText(description),
       pictures: newPictures,
+      highlighted: newHighlighted,
       review: review && typeof review.stars === 'number' && review.stars >= 1 && review.stars <= 5
         ? { stars: review.stars, description: String(review.description ?? '') }
         : undefined,

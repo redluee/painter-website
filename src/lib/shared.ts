@@ -3,6 +3,7 @@ export type RawProject = {
   paintType: string[];
   description: string;
   pictures: string[];
+  highlighted?: boolean;
   review?: { stars: number; description: string };
 };
 

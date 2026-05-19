@@ -7,7 +7,7 @@ export const prerender = false;
 export const GET: APIRoute = async () => {
   try {
     const projects = await readProjects();
-    return new Response(JSON.stringify(projects));
+    return new Response(JSON.stringify(projects.toReversed()));
   } catch {
     return new Response(
       JSON.stringify({ error: 'Projecten konden niet worden geladen' }),
@@ -19,7 +19,7 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { name, paintType, description, pictures, review } = body;
+    const { name, paintType, description, pictures, review, highlighted } = body;
 
     if (!name || !description) {
       return new Response(
@@ -52,12 +52,21 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    const isHighlighted = highlighted === true;
+
+    if (isHighlighted) {
+      for (const p of projects) {
+        p.highlighted = false;
+      }
+    }
+
     const project = {
       name,
       slug,
       paintType: Array.isArray(paintType) ? paintType : [],
       description: sanitizeRichText(description),
       pictures: Array.isArray(pictures) ? pictures : [],
+      highlighted: isHighlighted || undefined,
       review: review && typeof review.stars === 'number' && review.stars >= 1 && review.stars <= 5
         ? { stars: review.stars, description: String(review.description ?? '') }
         : undefined,

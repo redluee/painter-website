@@ -16,7 +16,7 @@ const siteContent: SiteContent = rawContent as SiteContent;
 export const DEFAULT_IMAGE = '/images/default-image.webp';
 
 export function getAllProjects(): Project[] {
-  return projects;
+  return projects.toReversed();
 }
 
 export function getProjectBySlug(slug: string): Project | undefined {

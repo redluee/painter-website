@@ -6,7 +6,7 @@ export const prerender = true;
 
 const { businessInfo } = getSiteContent();
 const projects = getAllProjects();
-const heroProject = projects[0];
+const heroProject = projects.find((p) => p.highlighted) ?? projects[0];
 const recentProjects = projects.slice(0, 3);
 const hasProjects = projects.length > 0;
 ---

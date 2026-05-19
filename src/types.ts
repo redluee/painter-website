@@ -4,6 +4,7 @@ export interface Project {
   paintType: string[];
   description: string;
   pictures: string[];
+  highlighted?: boolean;
   review?: {
     stars: number;
     description: string;
