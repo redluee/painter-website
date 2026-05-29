@@ -55,9 +55,9 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-gray-400 transition-colors"
         >
           <p class="text-sm text-gray-500 mb-1">Sleep afbeeldingen hierheen of klik om te uploaden</p>
-          <p class="text-xs text-gray-400">JPG, PNG, WebP of AVIF (max 10 MB per stuk)</p>
+          <p class="text-xs text-gray-400">Alle afbeeldingen (worden automatisch gecomprimeerd)</p>
         </div>
-        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/avif" multiple class="hidden" />
+        <input type="file" id="file-input" accept="image/*,.heic,.heif" multiple class="hidden" />
         <div id="image-previews" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4"></div>
       </div>
 
@@ -97,6 +97,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
   <script>
     import Quill from 'quill';
     import 'quill/dist/quill.snow.css';
+    import { compressImage, formatFileSize } from '../../../lib/client-image-utils';
 
     const form = document.getElementById('project-form');
     const errorEl = document.getElementById('error-message');
@@ -107,6 +108,8 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     let uploadedUrls = [];
     let draggedUrl = null;
     let selectedStars = 0;
+    const processingEntries = new Map();
+    const compressedSizes = new Map();
 
     function updateStars(value) {
       document.querySelectorAll('#review-stars .star-unit').forEach((el, i) => {
@@ -183,55 +186,97 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     });
 
     async function handleFiles(files) {
-      let skipped = 0;
+      let successCount = 0;
+      let errorCount = 0;
+      let lastError = '';
+      let hasProcessing = false;
 
       for (const file of files) {
-        if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif'].includes(file.type)) {
-          skipped++;
-          continue;
-        }
-        if (file.size > 10 * 1024 * 1024) {
-          skipped++;
-          continue;
-        }
-
-        const formData = new FormData();
-        formData.append('image', file);
+        hasProcessing = true;
+        const processId = `proc-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        processingEntries.set(processId, { fileName: file.name, originalSize: file.size, status: 'comprimeren' });
+        renderPreviews();
 
         try {
+          const { blob, originalSize, compressedSize } = await compressImage(file);
+
+          processingEntries.set(processId, { fileName: file.name, originalSize: file.size, status: 'uploaden' });
+          renderPreviews();
+
+          const formData = new FormData();
+          formData.append('image', blob, file.name.replace(/\.[^.]+$/, '.webp'));
+
           const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+
           if (res.ok) {
             const data = await res.json();
             uploadedUrls.push(data.url);
+            compressedSizes.set(data.url, compressedSize);
+            processingEntries.delete(processId);
             renderPreviews();
+            successCount++;
           } else {
-            skipped++;
+            const err = await res.json().catch(() => ({ error: 'Onbekende serverfout' }));
+            lastError = err.error;
+            processingEntries.delete(processId);
+            renderPreviews();
+            errorCount++;
           }
-        } catch {
-          skipped++;
+        } catch (e) {
+          console.error('Upload error:', e);
+          lastError = e instanceof Error ? e.message : 'Onbekende fout';
+          processingEntries.delete(processId);
+          renderPreviews();
+          errorCount++;
         }
       }
 
-      if (skipped > 0) {
-        showError(`${skipped} bestand(en) overgeslagen (ongeldig type, te groot of upload mislukt).`);
-      } else {
+      if (errorCount > 0) {
+        showError(`${errorCount} bestand(en) mislukt. ${lastError ? 'Laatste fout: ' + lastError : ''}`);
+      } else if (successCount > 0 || hasProcessing) {
         hideError();
+      } else {
+        showError('Geen geldige afbeeldingen geselecteerd.');
       }
     }
 
     function renderPreviews() {
-      imagePreviews.innerHTML = uploadedUrls.map((url, i) => `
-        <div class="relative group aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 cursor-grab"
-             draggable="true" data-url="${url}">
-          <img src="${url}" class="w-full h-full object-cover pointer-events-none" alt="" />
-          <button type="button" data-url="${url}"
-            class="absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-full text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-10">&times;</button>
-        </div>
-      `).join('');
+      let html = '';
+
+      for (const [id, entry] of processingEntries) {
+        html += `
+          <div class="relative aspect-[4/3] rounded-lg overflow-hidden bg-gray-50 border-2 border-accent-1/20 flex flex-col items-center justify-center gap-1.5 p-3">
+            <svg class="animate-spin h-5 w-5 text-accent-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span class="text-xs text-gray-500 text-center leading-tight truncate w-full">${entry.fileName}</span>
+            <span class="text-[11px] text-accent-1 font-medium">${entry.status}...</span>
+            <span class="text-[10px] text-gray-400">${formatFileSize(entry.originalSize)}</span>
+          </div>`;
+      }
+
+      html += uploadedUrls.map((url, i) => {
+        const size = compressedSizes.get(url);
+        const sizeBadge = size !== undefined
+          ? `<span class="absolute top-2 left-2 z-10 px-1.5 py-0.5 bg-green-600/80 text-white text-[10px] font-medium rounded pointer-events-none">${formatFileSize(size)}</span>`
+          : '';
+        return `
+          <div class="relative group aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 cursor-grab"
+               draggable="true" data-url="${url}">
+            ${sizeBadge}
+            <img src="${url}" class="w-full h-full object-cover pointer-events-none" alt="" />
+            <button type="button" data-url="${url}"
+              class="absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-full text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-10">&times;</button>
+          </div>`;
+      }).join('');
+
+      imagePreviews.innerHTML = html;
 
       imagePreviews.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
           uploadedUrls = uploadedUrls.filter(u => u !== btn.dataset.url);
+          compressedSizes.delete(btn.dataset.url);
           renderPreviews();
         });
       });

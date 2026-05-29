@@ -4,7 +4,7 @@ import { saveImage } from '../../../lib/admin';
 
 export const prerender = false;
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/heic', 'image/heif'];
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -21,15 +21,8 @@ export const POST: APIRoute = async ({ request }) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       return new Response(
         JSON.stringify({
-          error: 'Ongeldig bestandstype. Alleen JPG, PNG, WebP en AVIF zijn toegestaan.',
+          error: 'Ongeldig bestandstype.',
         }),
-        { status: 400 },
-      );
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      return new Response(
-        JSON.stringify({ error: 'Bestand is te groot (max 10 MB)' }),
         { status: 400 },
       );
     }

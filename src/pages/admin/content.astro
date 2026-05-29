@@ -134,8 +134,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 					>Profielafbeelding</legend
 				>
 				<p class="text-sm text-gray-500 mb-3">
-					Klik op de afbeelding om een nieuwe te uploaden (JPG, PNG, WebP of
-					AVIF, max 10 MB).
+					Klik op de afbeelding om een nieuwe te uploaden (alle afbeeldingen
+					worden automatisch gecomprimeerd).
 				</p>
 				<div id="profile-preview" class="hidden">
 					<div
@@ -171,13 +171,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 						</div>
 					</div>
 				</div>
-				<input
-					type="file"
-					id="profile-file-input"
-					accept="image/jpeg,image/png,image/webp,image/avif"
-					class="hidden"
-				/>
-			</fieldset>
+			<p id="profile-status" class="text-sm text-gray-500 mt-3 hidden"></p>
+			<input
+				type="file"
+				id="profile-file-input"
+				accept="image/*,.heic,.heif"
+				class="hidden"
+			/>
+		</fieldset>
 
 			<p id="error-message" class="text-sm text-red-600 hidden" role="alert">
 			</p>
@@ -226,6 +227,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 	<script>
 		import Quill from "quill";
 		import "quill/dist/quill.snow.css";
+		import { compressImage, formatFileSize } from "../../lib/client-image-utils";
 
 		const form = document.getElementById("content-form");
 		const errorEl = document.getElementById("error-message");
@@ -235,7 +237,17 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 		const profilePreview = document.getElementById("profile-preview");
 		const profileImg = document.getElementById("profile-img");
 		const profileWrapper = document.getElementById("profile-img-wrapper");
+		const profileStatus = document.getElementById("profile-status");
 		let profileImageUrl = "";
+
+		function showProfileStatus(msg) {
+			profileStatus.textContent = msg;
+			profileStatus.classList.remove("hidden");
+		}
+
+		function hideProfileStatus() {
+			profileStatus.classList.add("hidden");
+		}
 
 		profileWrapper.addEventListener("click", () => profileFileInput.click());
 
@@ -245,23 +257,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 		async function handleProfileImage(file) {
 			if (!file) return;
-			if (
-				!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(
-					file.type,
-				)
-			) {
-				showError("Ongeldig bestandstype. Kies JPG, PNG, WebP of AVIF.");
-				return;
-			}
-			if (file.size > 10 * 1024 * 1024) {
-				showError("Bestand is te groot (max 10 MB).");
-				return;
-			}
-
-			const formData = new FormData();
-			formData.append("image", file);
+			hideMessages();
+			hideProfileStatus();
 
 			try {
+				showProfileStatus(`${file.name} — comprimeren...`);
+
+				const { blob, originalSize, compressedSize } = await compressImage(file);
+
+				showProfileStatus(`${file.name} — uploaden...`);
+
+				const formData = new FormData();
+				formData.append("image", blob, file.name.replace(/\.[^.]+$/, ".webp"));
+
 				const res = await fetch("/api/admin/upload", {
 					method: "POST",
 					body: formData,
@@ -271,12 +279,17 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 					profileImageUrl = data.url;
 					profileImg.src = profileImageUrl;
 					profilePreview.classList.remove("hidden");
-					hideMessages();
+					hideProfileStatus();
+					showSuccess(`Profielafbeelding bijgewerkt (${formatFileSize(originalSize)} → ${formatFileSize(compressedSize)})`);
 				} else {
-					showError("Uploaden mislukt.");
+					const err = await res.json().catch(() => ({ error: 'Uploaden mislukt' }));
+					hideProfileStatus();
+					showError(err.error);
 				}
-			} catch {
-				showError("Er is iets misgegaan tijdens het uploaden.");
+			} catch (e) {
+				console.error('Profile upload error:', e);
+				hideProfileStatus();
+				showError(e instanceof Error ? e.message : 'Er is iets misgegaan tijdens het comprimeren of uploaden.');
 			}
 		}
 
