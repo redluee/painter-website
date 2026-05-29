@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { readSiteContent, writeSiteContent, sanitizeRichText } from '../../../lib/admin';
+import { readSiteContent, writeSiteContent, sanitizeRichText, deleteImageFile } from '../../../lib/admin';
 
 export const prerender = false;
 
@@ -85,12 +85,19 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    const oldContent = await readSiteContent();
+    const newProfileImage = typeof profileImage === 'string' ? profileImage : '/sebastiaan-profiel.jpg';
+
+    if (oldContent.profileImage && oldContent.profileImage !== newProfileImage) {
+      await deleteImageFile(oldContent.profileImage);
+    }
+
     const content = {
       businessInfo,
       aboutMe: sanitizeRichText(aboutMe),
       tarievenContent: sanitizeRichText(tarievenContent),
       partnersContent: sanitizeRichText(partnersContent),
-      profileImage: typeof profileImage === 'string' ? profileImage : '/sebastiaan-profiel.jpg',
+      profileImage: newProfileImage,
     };
     await writeSiteContent(content);
 
