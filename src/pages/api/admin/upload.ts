@@ -42,9 +42,10 @@ export const POST: APIRoute = async ({ request }) => {
     const url = await saveImage(buffer, file.name);
 
     return new Response(JSON.stringify({ url }));
-  } catch {
+  } catch (e) {
+    console.error('Upload handler error:', e);
     return new Response(
-      JSON.stringify({ error: 'Upload mislukt' }),
+      JSON.stringify({ error: `Upload mislukt: ${e instanceof Error ? e.message : 'Onbekende fout'}` }),
       { status: 500 },
     );
   }

@@ -7,6 +7,8 @@ import { slugify } from './shared';
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const IMAGES_DIR = path.resolve(process.cwd(), 'public/images');
 
+const USE_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN;
+
 export function sanitizeRichText(html: string): string {
   return sanitizeHtml(html, {
     allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup', 'a', 'ul', 'ol', 'li'],
@@ -78,24 +80,42 @@ export async function saveImage(
   buffer: Buffer,
   filename: string,
 ): Promise<string> {
-  await ensureImagesDir();
-
   const ext = path.extname(filename).toLowerCase();
   const name = path.basename(filename, ext);
   const safeName = name.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50);
   const unique = `${safeName}-${Date.now()}.webp`;
-  const outputPath = path.join(IMAGES_DIR, unique);
 
   const sharp = (await import('sharp')).default;
-  await sharp(buffer)
+  const processed = await sharp(buffer)
     .resize({ width: 1920, withoutEnlargement: true })
     .webp({ quality: 80 })
-    .toFile(outputPath);
+    .toBuffer();
 
+  if (USE_BLOB) {
+    const { put } = await import('@vercel/blob');
+    const blob = await put(`images/${unique}`, processed, {
+      access: 'public',
+      addRandomSuffix: false,
+    });
+    return blob.url;
+  }
+
+  await ensureImagesDir();
+  const outputPath = path.join(IMAGES_DIR, unique);
+  await fs.writeFile(outputPath, processed);
   return `/images/${unique}`;
 }
 
 export async function deleteImageFile(url: string): Promise<void> {
+  if (USE_BLOB && url.startsWith('http')) {
+    try {
+      const { del } = await import('@vercel/blob');
+      await del(url);
+    } catch {
+      // blob may not exist
+    }
+    return;
+  }
   if (!url.startsWith('/images/')) return;
   const filename = path.basename(url);
   const filePath = path.join(IMAGES_DIR, filename);
