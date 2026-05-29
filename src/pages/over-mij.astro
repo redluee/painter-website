@@ -14,7 +14,7 @@ const { aboutMe, businessInfo, profileImage } = getSiteContent();
       "@type": "Person",
       "name": "Sebastiaan Peters",
       "description": "Professioneel binnen- en buitenschilder in de regio Utrecht",
-      "image": "https://sebastiaanpeters.nl{profileImage}",
+      "image": "{new URL(profileImage, 'https://sebastiaanpeters.nl').href}",
       "url": "https://sebastiaanpeters.nl/over-mij"
     }
   </script>
