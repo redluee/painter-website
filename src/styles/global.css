@@ -161,6 +161,18 @@
   line-height: 1.7;
 }
 
+/* ── Mobile nav stagger ── */
+#mobile-menu [data-nav-item] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-spring), transform 0.5s var(--ease-spring);
+}
+
+#mobile-menu.open [data-nav-item] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ── Selection ── */
 ::selection {
   background-color: var(--theme-accent-1, #4A6741);

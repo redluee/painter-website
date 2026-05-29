@@ -89,25 +89,39 @@ const fullTitle = `${title} | ${siteName}`;
 					</a>
 				</div>
 
-				<button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 p-2 relative z-50" aria-label="Menu openen">
-					<span class="block w-6 h-px bg-neutral-900 transition-all duration-300 ease-spring"></span>
-					<span class="block w-6 h-px bg-neutral-900 transition-all duration-300 ease-spring"></span>
-					<span class="block w-6 h-px bg-neutral-900 transition-all duration-300 ease-spring"></span>
+				<button id="menu-toggle" class="md:hidden flex flex-col gap-1 p-2 relative z-[70]" aria-label="Menu openen">
+					<span class="block w-6 h-[1.5px] bg-neutral-900 transition-all duration-300 ease-spring"></span>
+					<span class="block w-6 h-[1.5px] bg-neutral-900 transition-all duration-300 ease-spring"></span>
+					<span class="block w-6 h-[1.5px] bg-neutral-900 transition-all duration-300 ease-spring"></span>
 				</button>
 			</nav>
+		</header>
 
-			<div id="mobile-menu" class="md:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-xl translate-x-full transition-transform duration-500 ease-spring">
-				<div class="flex flex-col items-center justify-center h-full gap-8 px-6">
-					<a href="/projecten" class="text-2xl font-medium tracking-tight text-neutral-800 hover:text-accent-1 transition-colors" data-nav-link>Projecten</a>
-					<a href="/over-mij" class="text-2xl font-medium tracking-tight text-neutral-800 hover:text-accent-1 transition-colors" data-nav-link>Over mij</a>
-					<a href="/partners" class="text-2xl font-medium tracking-tight text-neutral-800 hover:text-accent-1 transition-colors" data-nav-link>Partners</a>
-					<a href="/tarieven" class="text-2xl font-medium tracking-tight text-neutral-800 hover:text-accent-1 transition-colors" data-nav-link>Tarieven</a>
-					<a href="/contact" class="mt-4 px-8 py-3.5 bg-accent-1 text-white font-medium rounded-full text-center hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring">
+		<div id="mobile-menu" class="md:hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-xl translate-x-full transition-transform duration-500 ease-spring">
+			<div class="flex flex-col justify-center h-full px-6 gap-8 pt-18 pb-12 w-full overflow-y-auto">
+				<a href="/projecten" class:list={["relative text-center text-2xl sm:text-3xl font-medium tracking-tight transition-all duration-500 ease-spring translate-y-4 opacity-0", currentPath.startsWith('/projecten') ? "text-accent-1" : "text-neutral-800 hover:text-accent-1"]} style="transition-delay: 100ms" data-nav-item data-nav-link>
+					Projecten
+					{currentPath.startsWith('/projecten') && <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-px bg-accent-1"></span>}
+				</a>
+				<a href="/over-mij" class:list={["relative text-center text-2xl sm:text-3xl font-medium tracking-tight transition-all duration-500 ease-spring translate-y-4 opacity-0", currentPath === '/over-mij' ? "text-accent-1" : "text-neutral-800 hover:text-accent-1"]} style="transition-delay: 160ms" data-nav-item data-nav-link>
+					Over mij
+					{currentPath === '/over-mij' && <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-px bg-accent-1"></span>}
+				</a>
+				<a href="/partners" class:list={["relative text-center text-2xl sm:text-3xl font-medium tracking-tight transition-all duration-500 ease-spring translate-y-4 opacity-0", currentPath === '/partners' ? "text-accent-1" : "text-neutral-800 hover:text-accent-1"]} style="transition-delay: 220ms" data-nav-item data-nav-link>
+					Partners
+					{currentPath === '/partners' && <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-px bg-accent-1"></span>}
+				</a>
+				<a href="/tarieven" class:list={["relative text-center text-2xl sm:text-3xl font-medium tracking-tight transition-all duration-500 ease-spring translate-y-4 opacity-0", currentPath === '/tarieven' ? "text-accent-1" : "text-neutral-800 hover:text-accent-1"]} style="transition-delay: 280ms" data-nav-item data-nav-link>
+					Tarieven
+					{currentPath === '/tarieven' && <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-px bg-accent-1"></span>}
+				</a>
+				<div class="text-center transition-all duration-500 ease-spring translate-y-4 opacity-0" style="transition-delay: 360ms" data-nav-item>
+					<a href="/contact" class="inline-flex items-center px-6 py-3 bg-accent-1 text-white font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring" data-nav-link>
 						Offerte aanvragen
 					</a>
 				</div>
 			</div>
-		</header>
+		</div>
 
 		<main class="pt-18">
 			<slot />
@@ -171,6 +185,7 @@ const fullTitle = `${title} | ${siteName}`;
 
 				function closeMenu() {
 					isOpen = false;
+					menu.classList.remove('open');
 					menu.classList.add('translate-x-full');
 					menu.classList.remove('translate-x-0');
 					toggle.setAttribute('aria-label', 'Menu openen');
@@ -178,27 +193,31 @@ const fullTitle = `${title} | ${siteName}`;
 					spans[0].style.transform = '';
 					spans[1].style.opacity = '';
 					spans[2].style.transform = '';
+					document.body.style.overflow = '';
 					if (lastFocus) { lastFocus.focus(); lastFocus = null; }
 				}
 
 				if (toggle && menu) {
 					toggle.addEventListener('click', function() {
 						isOpen = !isOpen;
+						menu.classList.toggle('open', isOpen);
 						menu.classList.toggle('translate-x-full', !isOpen);
 						menu.classList.toggle('translate-x-0', isOpen);
 						toggle.setAttribute('aria-label', isOpen ? 'Menu sluiten' : 'Menu openen');
 
 						var spans = toggle.querySelectorAll('span');
 						if (isOpen) {
-							spans[0].style.transform = 'rotate(45deg) translate(4px, 4px)';
+							spans[0].style.transform = 'rotate(45deg) translate(3px, 5px)';
 							spans[1].style.opacity = '0';
-							spans[2].style.transform = 'rotate(-45deg) translate(4px, -4px)';
+							spans[2].style.transform = 'rotate(-45deg) translate(3px, -5px)';
+							document.body.style.overflow = 'hidden';
 							lastFocus = document.activeElement;
 							if (links.length > 0) links[0].focus();
 						} else {
 							spans[0].style.transform = '';
 							spans[1].style.opacity = '';
 							spans[2].style.transform = '';
+							document.body.style.overflow = '';
 							if (lastFocus) { lastFocus.focus(); lastFocus = null; }
 						}
 					});
