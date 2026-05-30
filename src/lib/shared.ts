@@ -5,6 +5,7 @@ export type RawProject = {
   pictures: string[];
   highlighted?: boolean;
   review?: { stars: number; description: string };
+  partner?: { name: string; website?: string };
 };
 
 export function slugify(name: string): string {

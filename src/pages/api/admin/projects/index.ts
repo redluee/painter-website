@@ -19,7 +19,7 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { name, paintType, description, pictures, review, highlighted } = body;
+    const { name, paintType, description, pictures, review, highlighted, partner } = body;
 
     if (!name || !description) {
       return new Response(
@@ -69,6 +69,9 @@ export const POST: APIRoute = async ({ request }) => {
       highlighted: isHighlighted || undefined,
       review: review && typeof review.stars === 'number' && review.stars >= 1 && review.stars <= 5
         ? { stars: review.stars, description: String(review.description ?? '') }
+        : undefined,
+      partner: partner && typeof partner.name === 'string' && partner.name.trim()
+        ? { name: partner.name.trim(), website: typeof partner.website === 'string' ? partner.website.trim() || undefined : undefined }
         : undefined,
     };
 

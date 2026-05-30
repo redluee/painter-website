@@ -9,6 +9,10 @@ export interface Project {
     stars: number;
     description: string;
   };
+  partner?: {
+    name: string;
+    website?: string;
+  };
 }
 
 export interface BusinessInfo {

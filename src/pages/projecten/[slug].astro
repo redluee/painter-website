@@ -70,6 +70,18 @@ if (!project) {
                 <span class="text-neutral-400">Verfsoort</span>
                 <span class="font-medium text-right">{project.paintType.join(', ') || 'Niet gespecificeerd'}</span>
               </div>
+              {project.partner && (
+                <div class="flex justify-between">
+                  <span class="text-neutral-400">Partner</span>
+                  {project.partner.website ? (
+                    <a href={project.partner.website} target="_blank" rel="noopener noreferrer" class="font-medium text-accent-1 hover:underline text-right">
+                      {project.partner.name}
+                    </a>
+                  ) : (
+                    <span class="font-medium text-right">{project.partner.name}</span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </aside>

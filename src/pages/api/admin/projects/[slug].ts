@@ -42,7 +42,7 @@ export const PUT: APIRoute = async ({ request, params }) => {
       );
     }
 
-    const { name, description, paintType, pictures, review, highlighted } = body;
+    const { name, description, paintType, pictures, review, highlighted, partner } = body;
 
     if (highlighted !== undefined && !name) {
       projects[index].highlighted = highlighted === true || undefined;
@@ -115,6 +115,9 @@ export const PUT: APIRoute = async ({ request, params }) => {
       highlighted: newHighlighted,
       review: review && typeof review.stars === 'number' && review.stars >= 1 && review.stars <= 5
         ? { stars: review.stars, description: String(review.description ?? '') }
+        : undefined,
+      partner: partner && typeof partner.name === 'string' && partner.name.trim()
+        ? { name: partner.name.trim(), website: typeof partner.website === 'string' ? partner.website.trim() || undefined : undefined }
         : undefined,
     };
 
