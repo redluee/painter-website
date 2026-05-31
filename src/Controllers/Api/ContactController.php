@@ -14,7 +14,7 @@ final class ContactController
     public function submit(Request $request, Response $response): Response
     {
         $limiter = new RateLimiter();
-        $ip = getClientIp($request);
+        $ip = getClientIp($request, true);
         $check = $limiter->check($ip, 3, 60);
 
         if (!$check['allowed']) {

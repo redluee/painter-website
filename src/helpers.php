@@ -11,18 +11,27 @@ function slugify(string $name): string {
 
 function sanitizeRichText(string $html): string {
     $allowedTags = '<p><br><strong><b><em><i><u><s><sub><sup><a><ul><ol><li>';
-    return strip_tags($html, $allowedTags);
+    $html = strip_tags($html, $allowedTags);
+
+    // Strip dangerous attributes from allowed tags (JS event handlers, javascript: URLs)
+    $html = preg_replace('/\s*on\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $html);
+    $html = preg_replace('/href\s*=\s*"\s*javascript\s*:/i', 'href="#"', $html);
+    $html = preg_replace("/href\s*=\s*'\s*javascript\s*:/i", "href='#'", $html);
+
+    return $html;
 }
 
-function getClientIp(Psr\Http\Message\ServerRequestInterface $request): string {
+function getClientIp(Psr\Http\Message\ServerRequestInterface $request, bool $trustProxy = false): string {
     $serverParams = $request->getServerParams();
     $headers = $request->getHeaders();
 
-    if (isset($headers['X-Forwarded-For'][0])) {
-        return trim(explode(',', $headers['X-Forwarded-For'][0])[0]);
-    }
-    if (isset($headers['X-Real-Ip'][0])) {
-        return $headers['X-Real-Ip'][0];
+    if ($trustProxy) {
+        if (isset($headers['X-Forwarded-For'][0])) {
+            return trim(explode(',', $headers['X-Forwarded-For'][0])[0]);
+        }
+        if (isset($headers['X-Real-Ip'][0])) {
+            return $headers['X-Real-Ip'][0];
+        }
     }
     return $serverParams['REMOTE_ADDR'] ?? 'unknown';
 }

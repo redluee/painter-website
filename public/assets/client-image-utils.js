@@ -8,6 +8,7 @@ window.ImageUtils = {
   async compressImage(file) {
     let imageBlob = file;
 
+    // HEIC/HEIF conversion requires heic2any library to be loaded separately
     if (/\.heic$/i.test(file.name) || /\.heif$/i.test(file.name)) {
       if (typeof window.heic2any !== 'undefined') {
         try {

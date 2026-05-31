@@ -26,13 +26,14 @@ $app = AppFactory::create();
 $app->setBasePath('');
 
 $app->addBodyParsingMiddleware();
-$app->addErrorMiddleware(true, true, true);
+$displayErrors = ($_ENV['APP_ENV'] ?? 'production') === 'development';
+$app->addErrorMiddleware($displayErrors, true, true);
 
 // Security headers middleware (applied to all responses)
 $app->add(function (Request $request, RequestHandler $handler): \Psr\Http\Message\ResponseInterface {
     $response = $handler->handle($request);
 
-    $csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
+    $csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 
     return $response
         ->withHeader('X-Content-Type-Options', 'nosniff')

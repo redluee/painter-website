@@ -9,6 +9,12 @@ use App\Controllers\Api as Api;
 use App\Controllers\Admin as Admin;
 use App\Controllers\Public as Pub;
 
+// ── Health / monitoring ──
+$app->get('/health', function (Request $request, Response $response): Response {
+    $response->getBody()->write(json_encode(['status' => 'ok', 'timestamp' => date('c')]));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 // ── Public pages ──
 $app->get('/', [Pub\HomeController::class, 'show']);
 $app->get('/projecten', [Pub\ProjectsController::class, 'index']);

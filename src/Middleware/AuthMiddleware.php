@@ -33,6 +33,14 @@ final class AuthMiddleware implements MiddlewareInterface
             if (str_starts_with($path, '/api/admin') && !in_array($request->getMethod(), ['GET', 'HEAD'])) {
                 $origin = $request->getHeaderLine('Origin');
                 $host = $request->getHeaderLine('Host');
+
+                // Reject when Origin is missing (CSRF bypass prevention)
+                if (!$origin) {
+                    $response = new Response();
+                    $response->getBody()->write(json_encode(['error' => 'Ongeldige aanvraag']));
+                    return $response->withStatus(403)->withHeader('Content-Type', 'application/json');
+                }
+
                 if ($origin && $host) {
                     $originParts = parse_url($origin);
                     $originHost = $originParts['host'] ?? '';

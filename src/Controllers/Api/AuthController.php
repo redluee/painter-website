@@ -23,7 +23,7 @@ final class AuthController
         }
 
         $limiter = new RateLimiter();
-        $ip = getClientIp($request);
+        $ip = getClientIp($request, true);
         $check = $limiter->check($ip, 5, 15 * 60);
 
         if (!$check['allowed']) {

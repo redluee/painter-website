@@ -15,12 +15,7 @@
     "ext-json": "*"
   },
   "config": {
-    "allow-plugins": {},
-    "policy": {
-      "advisories": {
-        "ignore-id": ["PKSA-y2cr-5h3j-g3ys"]
-      }
-    }
+    "allow-plugins": {}
   },
   "autoload": {
     "psr-4": {

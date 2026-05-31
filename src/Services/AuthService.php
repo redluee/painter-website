@@ -13,7 +13,11 @@ final class AuthService
 
     public function __construct(DataService $data)
     {
-        $this->secret = $_ENV['JWT_SECRET'] ?? '';
+        $secret = $_ENV['JWT_SECRET'] ?? '';
+        if (strlen($secret) < 32) {
+            throw new \RuntimeException('JWT_SECRET must be at least 32 characters');
+        }
+        $this->secret = $secret;
         $this->data = $data;
     }
 
