@@ -1,0 +1,225 @@
+<div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Website inhoud bewerken</h2>
+    <form id="content-form" class="space-y-8">
+        <fieldset>
+            <legend class="text-lg font-semibold text-gray-900 mb-4">Bedrijfsgegevens</legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Bedrijfsnaam</label>
+                    <input type="text" id="name" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefoon</label>
+                    <input type="text" id="phone" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <input type="email" id="email" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Locatie</label>
+                    <input type="text" id="location" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent">
+                </div>
+                <div>
+                    <label for="kvk" class="block text-sm font-medium text-gray-700 mb-1">KvK-nummer</label>
+                    <input type="text" id="kvk" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent">
+                </div>
+            </div>
+            <div class="mt-4">
+                <label for="intro" class="block text-sm font-medium text-gray-700 mb-1">Intro</label>
+                <textarea id="intro" rows="3" required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent resize-none"></textarea>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend class="text-lg font-semibold text-gray-900 mb-4">Over mij</legend>
+            <p class="text-sm text-gray-500 mb-3">Tekst op de Over mij pagina.</p>
+            <div id="aboutMe-editor" class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"></div>
+        </fieldset>
+
+        <fieldset>
+            <legend class="text-lg font-semibold text-gray-900 mb-4">Tarieven</legend>
+            <p class="text-sm text-gray-500 mb-3">Tekst op de Tarieven pagina.</p>
+            <div id="tarieven-editor" class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"></div>
+        </fieldset>
+
+        <fieldset>
+            <legend class="text-lg font-semibold text-gray-900 mb-4">Partners</legend>
+            <p class="text-sm text-gray-500 mb-3">Tekst op de Partners pagina.</p>
+            <div id="partners-editor" class="bg-white border border-gray-300 rounded-xl overflow-hidden quill-custom"></div>
+        </fieldset>
+
+        <fieldset>
+            <legend class="text-lg font-semibold text-gray-900 mb-4">Profielafbeelding</legend>
+            <p class="text-sm text-gray-500 mb-3">Klik op de afbeelding om een nieuwe te uploaden (alle afbeeldingen worden automatisch gecomprimeerd).</p>
+            <div id="profile-preview" class="hidden">
+                <div id="profile-img-wrapper" class="relative w-48 h-48 rounded-full overflow-hidden shadow-lg cursor-pointer group">
+                    <img id="profile-img" src="" alt="Profielafbeelding" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
+                        <svg class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                    </div>
+                </div>
+            </div>
+            <p id="profile-status" class="text-sm text-gray-500 mt-3 hidden"></p>
+            <input type="file" id="profile-file-input" accept="image/*,.heic,.heif" class="hidden">
+        </fieldset>
+
+        <p id="error-message" class="text-sm text-red-600 hidden" role="alert"></p>
+        <p id="success-message" class="text-sm text-green-600 hidden" role="status"></p>
+
+        <div class="flex gap-3">
+            <button type="submit" class="px-8 py-3 bg-accent-1 text-white text-sm font-medium rounded-xl hover:bg-accent-2 transition-colors">Opslaan</button>
+            <a href="/admin/dashboard" class="px-8 py-3 border border-gray-300 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors">Annuleren</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .quill-custom .ql-editor { font-family: inherit; font-size: 0.875rem; line-height: 1.625; min-height: 200px; }
+    .quill-custom .ql-toolbar { border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; border-bottom: 1px solid #e5e7eb; }
+    .quill-custom .ql-container { border: none; font-family: inherit; }
+</style>
+
+<script src="/assets/quill/quill.js"></script>
+<link rel="stylesheet" href="/assets/quill/quill.snow.css">
+<script src="/assets/client-image-utils.js"></script>
+<script>
+    var form = document.getElementById('content-form');
+    var errorEl = document.getElementById('error-message');
+    var successEl = document.getElementById('success-message');
+    var profileFileInput = document.getElementById('profile-file-input');
+    var profilePreview = document.getElementById('profile-preview');
+    var profileImg = document.getElementById('profile-img');
+    var profileWrapper = document.getElementById('profile-img-wrapper');
+    var profileStatus = document.getElementById('profile-status');
+    var profileImageUrl = '';
+
+    function showProfileStatus(msg) { profileStatus.textContent = msg; profileStatus.classList.remove('hidden'); }
+    function hideProfileStatus() { profileStatus.classList.add('hidden'); }
+    profileWrapper.addEventListener('click', function () { profileFileInput.click(); });
+    profileFileInput.addEventListener('change', function () { handleProfileImage(profileFileInput.files[0]); });
+
+    async function handleProfileImage(file) {
+        if (!file) return;
+        hideMessages(); hideProfileStatus();
+        try {
+            showProfileStatus(file.name + ' — comprimeren...');
+            var result = await ImageUtils.compressImage(file);
+            showProfileStatus(file.name + ' — uploaden...');
+            var formData = new FormData();
+            formData.append('image', result.blob, file.name.replace(/\.[^.]+$/, '.webp'));
+            var res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+            if (res.ok) {
+                var data = await res.json();
+                profileImageUrl = data.url;
+                profileImg.src = profileImageUrl;
+                profilePreview.classList.remove('hidden');
+                hideProfileStatus();
+                showSuccess('Profielafbeelding bijgewerkt (' + ImageUtils.formatFileSize(result.originalSize) + ' → ' + ImageUtils.formatFileSize(result.compressedSize) + ')');
+            } else {
+                var err = await res.json();
+                hideProfileStatus(); showError(err.error || 'Uploaden mislukt');
+            }
+        } catch (e) {
+            console.error('Profile upload error:', e);
+            hideProfileStatus();
+            showError(e instanceof Error ? e.message : 'Er is iets misgegaan tijdens het comprimeren of uploaden.');
+        }
+    }
+
+    var aboutMeEditor, tarievenEditor, partnersEditor;
+    var quillReady = false;
+
+    function initQuill() {
+        if (typeof Quill === 'undefined') return;
+        quillReady = true;
+        aboutMeEditor = new Quill('#aboutMe-editor', { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'link'], [{ list: 'bullet' }], ['clean']] } });
+        tarievenEditor = new Quill('#tarieven-editor', { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'underline', 'link'], [{ list: 'bullet' }], ['clean']] } });
+        partnersEditor = new Quill('#partners-editor', { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'link'], [{ list: 'bullet' }], ['clean']] } });
+        if (window._cachedContent) setQuillContent(window._cachedContent);
+    }
+
+    function setQuillContent(data) {
+        if (!quillReady) return;
+        aboutMeEditor.root.innerHTML = data.aboutMe || '';
+        tarievenEditor.root.innerHTML = data.tarievenContent || '';
+        partnersEditor.root.innerHTML = data.partnersContent || '';
+    }
+
+    function showError(msg) { errorEl.textContent = msg; errorEl.classList.remove('hidden'); successEl.classList.add('hidden'); }
+    function showSuccess(msg) { successEl.textContent = msg; successEl.classList.remove('hidden'); errorEl.classList.add('hidden'); }
+    function hideMessages() { errorEl.classList.add('hidden'); successEl.classList.add('hidden'); }
+
+    async function loadContent() {
+        try {
+            var res = await fetch('/api/admin/content');
+            if (!res.ok) throw new Error('Laden mislukt');
+            var data = await res.json();
+            document.getElementById('name').value = data.businessInfo.name || '';
+            document.getElementById('phone').value = data.businessInfo.phone || '';
+            document.getElementById('email').value = data.businessInfo.email || '';
+            document.getElementById('location').value = data.businessInfo.location || '';
+            document.getElementById('kvk').value = data.businessInfo.kvk || '';
+            document.getElementById('intro').value = data.businessInfo.intro || '';
+            window._cachedContent = data;
+            setQuillContent(data);
+            if (data.profileImage) {
+                profileImageUrl = data.profileImage;
+                profileImg.src = profileImageUrl;
+                profilePreview.classList.remove('hidden');
+            }
+        } catch { showError('Kon inhoud niet laden.'); }
+    }
+
+    function getEditorHtml(editor) {
+        return editor ? editor.root.innerHTML : '';
+    }
+
+    function getEditorText(editor) {
+        return editor ? editor.getText().trim() : '';
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        hideMessages();
+        if (quillReady) {
+            if (!getEditorText(aboutMeEditor)) { showError('Het veld "Over mij" is verplicht.'); return; }
+            if (!getEditorText(tarievenEditor)) { showError('Het veld "Tarieven" is verplicht.'); return; }
+            if (!getEditorText(partnersEditor)) { showError('Het veld "Partners" is verplicht.'); return; }
+        }
+
+        var payload = {
+            businessInfo: {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                location: document.getElementById('location').value,
+                kvk: document.getElementById('kvk').value,
+                intro: document.getElementById('intro').value,
+            },
+            aboutMe: getEditorHtml(aboutMeEditor),
+            tarievenContent: getEditorHtml(tarievenEditor),
+            partnersContent: getEditorHtml(partnersEditor),
+            profileImage: profileImageUrl,
+        };
+
+        try {
+            var res = await fetch('/api/admin/content', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (res.ok) { showSuccess('Inhoud opgeslagen!'); }
+            else { var data = await res.json(); showError(data.error || 'Opslaan mislukt'); }
+        } catch { showError('Er is iets misgegaan.'); }
+    });
+
+    loadContent();
+    initQuill();
+</script>

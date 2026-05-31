@@ -1,0 +1,98 @@
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">Projecten</h2>
+    <a href="/admin/projects/new" class="px-5 py-2.5 bg-accent-1 text-white text-sm font-medium rounded-xl hover:bg-accent-2 transition-colors">Nieuw project</a>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-gray-100 bg-gray-50">
+                    <th class="text-left px-6 py-4 font-medium text-gray-500">Naam</th>
+                    <th class="text-left px-6 py-4 font-medium text-gray-500 hidden md:table-cell">Type</th>
+                    <th class="text-left px-6 py-4 font-medium text-gray-500 hidden sm:table-cell">Afbeeldingen</th>
+                    <th class="text-left px-6 py-4 font-medium text-gray-500">Uitgelicht</th>
+                    <th class="text-right px-6 py-4 font-medium text-gray-500">Acties</th>
+                </tr>
+            </thead>
+            <tbody id="projects-table-body">
+                <tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">Laden...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="no-highlight-notice" class="hidden mt-3 text-sm text-gray-400 text-center">Geen project gemarkeerd als uitgelicht. Het eerste project in de lijst wordt getoond op de homepage.</div>
+
+<div id="delete-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-sm w-full">
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Project verwijderen</h3>
+        <p class="text-sm text-gray-500 mb-6" id="delete-modal-text">Weet je zeker dat je dit project wilt verwijderen?</p>
+        <div class="flex gap-3 justify-end">
+            <button id="delete-cancel" class="px-5 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors">Annuleren</button>
+            <button id="delete-confirm" class="px-5 py-2.5 bg-red-600 text-white text-sm font-medium rounded-xl hover:bg-red-700 transition-colors">Verwijderen</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tbody = document.getElementById('projects-table-body');
+    var noHighlightNotice = document.getElementById('no-highlight-notice');
+    var deleteModal = document.getElementById('delete-modal');
+    var deleteConfirm = document.getElementById('delete-confirm');
+    var deleteCancel = document.getElementById('delete-cancel');
+    var deleteModalText = document.getElementById('delete-modal-text');
+    var deleteSlug = null;
+
+    function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+    function renderProjects(projects) {
+        if (projects.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">Geen projecten gevonden.</td></tr>'; return; }
+        noHighlightNotice.classList.toggle('hidden', projects.some(function (p) { return p.highlighted; }));
+        tbody.innerHTML = projects.map(function (p) {
+            return '<tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">' +
+                '<td class="px-6 py-4"><span class="font-medium text-gray-900">' + escapeHtml(p.name) + '</span></td>' +
+                '<td class="px-6 py-4 text-gray-500 hidden md:table-cell">' + escapeHtml((p.paintType || []).join(', ')) + '</td>' +
+                '<td class="px-6 py-4 text-gray-500 hidden sm:table-cell">' + (p.pictures || []).length + '</td>' +
+                '<td class="px-6 py-4"><button onclick="toggleHighlight(\'' + p.slug + '\', ' + (!p.highlighted) + ')" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ' + (p.highlighted ? 'bg-accent-1/10 border-accent-1/30 text-accent-1' : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600') + '">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" ' + (p.highlighted ? 'fill="currentColor"' : 'fill="none"') + ' stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
+                (p.highlighted ? 'Uitgelicht' : 'Highlight') + '</button></td>' +
+                '<td class="px-6 py-4 text-right"><div class="flex gap-2 justify-end">' +
+                '<a href="/admin/projects/edit/' + p.slug + '" class="px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Bewerk</a>' +
+                '<button onclick="confirmDelete(\'' + p.slug + '\', \'' + escapeHtml(p.name) + '\')" class="px-3 py-1.5 text-xs font-medium border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors">Verwijder</button>' +
+                '</div></td></tr>';
+        }).join('');
+    }
+
+    window.toggleHighlight = async function (slug, highlighted) {
+        try {
+            var res = await fetch('/api/admin/projects/' + slug, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ highlighted: highlighted }) });
+            if (res.ok) loadProjects(); else alert('Uitgelicht wijzigen mislukt.');
+        } catch { alert('Er is iets misgegaan.'); }
+    };
+
+    window.confirmDelete = function (slug, name) {
+        deleteSlug = slug;
+        deleteModalText.textContent = 'Weet je zeker dat je "' + name + '" wilt verwijderen? Dit kan niet ongedaan worden gemaakt.';
+        deleteModal.classList.remove('hidden');
+    };
+
+    deleteCancel.addEventListener('click', function () { deleteModal.classList.add('hidden'); deleteSlug = null; });
+    deleteConfirm.addEventListener('click', async function () {
+        if (!deleteSlug) return;
+        try {
+            var res = await fetch('/api/admin/projects/' + deleteSlug, { method: 'DELETE' });
+            if (res.ok) { deleteModal.classList.add('hidden'); loadProjects(); } else { alert('Verwijderen mislukt.'); }
+        } catch { alert('Er is iets misgegaan.'); }
+        deleteSlug = null;
+    });
+
+    async function loadProjects() {
+        try {
+            var res = await fetch('/api/admin/projects');
+            var projects = await res.json();
+            renderProjects(projects);
+        } catch { tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-red-500">Laden mislukt.</td></tr>'; }
+    }
+    loadProjects();
+</script>

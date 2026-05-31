@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Inloggen | Admin</title>
+    <link rel="stylesheet" href="/api/theme.css">
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-sm">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">Admin paneel</h1>
+            <p class="text-sm text-gray-500 mb-8">Log in om verder te gaan</p>
+            <form id="login-form" class="flex flex-col gap-5">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
+                    <input type="email" id="email" name="email" required autocomplete="email"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"
+                        placeholder="admin@voorbeeld.nl">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Wachtwoord</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-1 focus:border-transparent"
+                        placeholder="••••••••">
+                </div>
+                <p id="error-message" class="text-sm text-red-600 hidden" role="alert"></p>
+                <button type="submit" class="w-full py-3 bg-accent-1 text-white text-sm font-medium rounded-xl hover:bg-accent-2 transition-colors">Inloggen</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        var form = document.getElementById('login-form');
+        var errorEl = document.getElementById('error-message');
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            errorEl.classList.add('hidden');
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            try {
+                var res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password }),
+                });
+                var data = await res.json();
+                if (res.ok) {
+                    window.location.href = '/admin/dashboard';
+                } else {
+                    errorEl.textContent = data.error || 'Onbekende fout';
+                    errorEl.classList.remove('hidden');
+                }
+            } catch {
+                errorEl.textContent = 'Er is iets misgegaan. Probeer het opnieuw.';
+                errorEl.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
