@@ -11,6 +11,7 @@ final class SettingsController
     public function show(Request $request, Response $response): Response
     {
         $title = 'Kleur instellingen';
+        $currentPath = $request->getUri()->getPath();
         ob_start();
         require dirname(__DIR__, 3) . '/templates/admin/instellingen.php';
         $content = ob_get_clean();

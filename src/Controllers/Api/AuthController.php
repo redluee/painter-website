@@ -56,12 +56,13 @@ final class AuthController
         $token = $authService->createToken($email, $settings['tokenVersion']);
 
         $response->getBody()->write(json_encode(['success' => true]));
+        $secureFlag = (!isset($_ENV['APP_ENV']) || $_ENV['APP_ENV'] !== 'development') ? '; Secure' : '';
         return $response
             ->withHeader('Set-Cookie', sprintf(
                 'auth=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d%s',
                 $token,
                 60 * 60 * 8,
-                isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'production' ? '; Secure' : ''
+                $secureFlag
             ))
             ->withHeader('Content-Type', 'application/json');
     }
@@ -72,9 +73,13 @@ final class AuthController
         $authService = new AuthService($dataService);
         $authService->invalidateTokens();
 
+        $secureFlag = (!isset($_ENV['APP_ENV']) || $_ENV['APP_ENV'] !== 'development') ? '; Secure' : '';
         $response->getBody()->write(json_encode(['success' => true]));
         return $response
-            ->withHeader('Set-Cookie', 'auth=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax')
+            ->withHeader('Set-Cookie', sprintf(
+                'auth=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax%s',
+                $secureFlag
+            ))
             ->withHeader('Content-Type', 'application/json');
     }
 }

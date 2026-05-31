@@ -11,6 +11,7 @@ final class ContentController
     public function show(Request $request, Response $response): Response
     {
         $title = 'Inhoud';
+        $currentPath = $request->getUri()->getPath();
         ob_start();
         require dirname(__DIR__, 3) . '/templates/admin/content.php';
         $content = ob_get_clean();

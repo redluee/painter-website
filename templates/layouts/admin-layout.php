@@ -24,16 +24,16 @@
     <div class="max-w-7xl mx-auto px-4 py-8">
         <nav class="relative flex gap-1 mb-8 border-b border-gray-200 pb-4 overflow-x-auto" id="admin-nav">
             <a href="/admin/dashboard"
-               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin/dashboard') || $_SERVER['REQUEST_URI'] === '/admin' ? 'nav-active' : '' ?>"
+               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($currentPath ?? '', '/admin/dashboard') || ($currentPath ?? '') === '/admin' ? 'nav-active' : '' ?>"
                data-nav>Dashboard</a>
             <a href="/admin/content"
-               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin/content') ? 'nav-active' : '' ?>"
+               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($currentPath ?? '', '/admin/content') ? 'nav-active' : '' ?>"
                data-nav>Inhoud</a>
             <a href="/admin/projects"
-               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin/projects') ? 'nav-active' : '' ?>"
+               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($currentPath ?? '', '/admin/projects') ? 'nav-active' : '' ?>"
                data-nav>Projecten</a>
             <a href="/admin/instellingen"
-               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin/instellingen') ? 'nav-active' : '' ?>"
+               class="px-4 py-2 text-sm font-medium whitespace-nowrap rounded-lg transition-colors relative z-10 text-gray-600 hover:text-gray-900 <?= str_starts_with($currentPath ?? '', '/admin/instellingen') ? 'nav-active' : '' ?>"
                data-nav>Kleur instellingen</a>
             <div id="nav-slider" class="absolute top-0 left-0 bg-accent-1 rounded-lg pointer-events-none transition-all duration-300 ease-in-out"></div>
         </nav>
