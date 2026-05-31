@@ -1,0 +1,33 @@
+{
+  "name": "sebastiaanpeters/website",
+  "type": "project",
+  "require": {
+    "php": "^8.4",
+    "slim/slim": "^4.0",
+    "slim/psr7": "^1.0",
+    "firebase/php-jwt": "^6.0",
+    "phpmailer/phpmailer": "^6.0",
+    "vlucas/phpdotenv": "^5.0",
+    "intervention/image": "^3.0",
+    "ext-gd": "*",
+    "ext-mbstring": "*",
+    "ext-fileinfo": "*",
+    "ext-json": "*"
+  },
+  "config": {
+    "allow-plugins": {},
+    "policy": {
+      "advisories": {
+        "ignore-id": ["PKSA-y2cr-5h3j-g3ys"]
+      }
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "scripts": {
+    "hash-password": "php scripts/hash-password.php"
+  }
+}
