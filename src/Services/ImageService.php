@@ -12,7 +12,7 @@ final class ImageService
 
     public function __construct()
     {
-        $this->imagesDir = dirname(__DIR__, 2) . '/public/images';
+        $this->imagesDir = dirname(__DIR__, 2) . '/' . ($_ENV['PUBLIC_DIR'] ?? 'public') . '/images';
     }
 
     private function getManager(): ImageManager
