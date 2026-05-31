@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/api/theme.css">
     <link rel="stylesheet" href="/assets/styles.css">
     <title><?= escapeHtml($title) ?> | Admin | Sebastiaan Peters</title>

@@ -2,8 +2,9 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
     <link rel="stylesheet" href="/api/theme.css">
     <link rel="stylesheet" href="/assets/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,9 +57,18 @@
                     Projecten
                     <?php if (str_starts_with($currentPath ?? '', '/projecten')): ?><span class="absolute -bottom-px left-0 right-0 h-px bg-accent-1"></span><?php endif; ?>
                 </a>
-                <a href="/over-mij" class="text-sm font-medium transition-colors <?= ($currentPath ?? '') === '/over-mij' ? 'text-accent-1' : 'text-neutral-600 hover:text-neutral-900' ?>">Over mij</a>
-                <a href="/partners" class="text-sm font-medium transition-colors <?= ($currentPath ?? '') === '/partners' ? 'text-accent-1' : 'text-neutral-600 hover:text-neutral-900' ?>">Partners</a>
-                <a href="/tarieven" class="text-sm font-medium transition-colors <?= ($currentPath ?? '') === '/tarieven' ? 'text-accent-1' : 'text-neutral-600 hover:text-neutral-900' ?>">Tarieven</a>
+                <a href="/over-mij" class="text-sm font-medium transition-colors relative py-1 <?= ($currentPath ?? '') === '/over-mij' ? 'text-accent-1' : 'text-neutral-600 hover:text-neutral-900' ?>">
+                    Over mij
+                    <?php if (($currentPath ?? '') === '/over-mij'): ?><span class="absolute -bottom-px left-0 right-0 h-px bg-accent-1"></span><?php endif; ?>
+                </a>
+                <a href="/partners" class="text-sm font-medium transition-colors relative py-1 <?= ($currentPath ?? '') === '/partners' ? 'text-accent-1' : 'text-neutral-600 hover:text-neutral-900' ?>">
+                    Partners
+                    <?php if (($currentPath ?? '') === '/partners'): ?><span class="absolute -bottom-px left-0 right-0 h-px bg-accent-1"></span><?php endif; ?>
+                </a>
+                <a href="/tarieven" class="text-sm font-medium transition-colors relative py-1 <?= ($currentPath ?? '') === '/tarieven' ? 'text-accent-1' : 'text-neutral-600 hover:text-neutral-900' ?>">
+                    Tarieven
+                    <?php if (($currentPath ?? '') === '/tarieven'): ?><span class="absolute -bottom-px left-0 right-0 h-px bg-accent-1"></span><?php endif; ?>
+                </a>
                 <a href="/contact" class="px-5 py-2.5 bg-accent-1 text-white text-sm font-medium rounded-full hover:bg-accent-2 active:scale-[0.97] transition-all duration-300 ease-spring">Offerte aanvragen</a>
             </div>
             <button id="menu-toggle" class="md:hidden flex flex-col gap-1 p-2 relative z-[70]" aria-label="Menu openen">
