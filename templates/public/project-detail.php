@@ -7,7 +7,7 @@
         "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://sebastiaanpeters.nl/" },
             { "@type": "ListItem", "position": 2, "name": "Projecten", "item": "https://sebastiaanpeters.nl/projecten" },
-            { "@type": "ListItem", "position": 3, "name": "<?= escapeHtml($project['name']) ?>", "item": "https://sebastiaanpeters.nl/projecten/<?= $project['slug'] ?>" }
+            { "@type": "ListItem", "position": 3, "name": "<?= escapeHtml($project['name']) ?>", "item": "https://sebastiaanpeters.nl/projecten/<?= escapeHtml($project['slug']) ?>" }
         ]
     }
     </script>

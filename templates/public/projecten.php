@@ -7,11 +7,11 @@
         </div>
 
         <?php if ($firstProject): ?>
-        <a href="/projecten/<?= $firstProject['slug'] ?>" class="group block mt-16 reveal">
+        <a href="/projecten/<?= escapeHtml($firstProject['slug']) ?>" class="group block mt-16 reveal">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div class="lg:col-span-7 overflow-hidden bg-neutral-100">
                     <div class="aspect-[16/10]">
-                        <img src="<?= $firstProject['pictures'][0] ?? \App\Controllers\Public\ProjectsController::DEFAULT_IMAGE ?>" alt="<?= escapeHtml($firstProject['name']) ?>" class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105" loading="eager">
+                        <img src="<?= escapeHtml($firstProject['pictures'][0] ?? \App\Controllers\Public\ProjectsController::DEFAULT_IMAGE) ?>" alt="<?= escapeHtml($firstProject['name']) ?>" class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105" loading="eager">
                     </div>
                 </div>
                 <div class="lg:col-span-5">
@@ -30,10 +30,10 @@
         <?php if ($restProjects): ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-20 mt-20 stagger-children">
             <?php foreach ($restProjects as $project): ?>
-            <a href="/projecten/<?= $project['slug'] ?>" class="stagger-item group block">
+            <a href="/projecten/<?= escapeHtml($project['slug']) ?>" class="stagger-item group block">
                 <div class="overflow-hidden bg-neutral-100">
                     <div class="aspect-[4/3]">
-                        <img src="<?= $project['pictures'][0] ?? \App\Controllers\Public\ProjectsController::DEFAULT_IMAGE ?>" alt="<?= escapeHtml($project['name']) ?>" class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105" loading="lazy">
+                        <img src="<?= escapeHtml($project['pictures'][0] ?? \App\Controllers\Public\ProjectsController::DEFAULT_IMAGE) ?>" alt="<?= escapeHtml($project['name']) ?>" class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105" loading="lazy">
                     </div>
                 </div>
                 <div class="mt-5">

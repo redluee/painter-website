@@ -54,12 +54,12 @@
                 '<td class="px-6 py-4"><span class="font-medium text-gray-900">' + escapeHtml(p.name) + '</span></td>' +
                 '<td class="px-6 py-4 text-gray-500 hidden md:table-cell">' + escapeHtml((p.paintType || []).join(', ')) + '</td>' +
                 '<td class="px-6 py-4 text-gray-500 hidden sm:table-cell">' + (p.pictures || []).length + '</td>' +
-                '<td class="px-6 py-4"><button onclick="toggleHighlight(\'' + p.slug + '\', ' + (!p.highlighted) + ')" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ' + (p.highlighted ? 'bg-accent-1/10 border-accent-1/30 text-accent-1' : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600') + '">' +
+                '<td class="px-6 py-4"><button onclick="toggleHighlight(\'' + escapeHtml(p.slug) + '\', ' + (!p.highlighted) + ')" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ' + (p.highlighted ? 'bg-accent-1/10 border-accent-1/30 text-accent-1' : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600') + '">' +
                 '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" ' + (p.highlighted ? 'fill="currentColor"' : 'fill="none"') + ' stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
                 (p.highlighted ? 'Uitgelicht' : 'Highlight') + '</button></td>' +
                 '<td class="px-6 py-4 text-right"><div class="flex gap-2 justify-end">' +
-                '<a href="/admin/projects/edit/' + p.slug + '" class="px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Bewerk</a>' +
-                '<button onclick="confirmDelete(\'' + p.slug + '\', \'' + escapeHtml(p.name) + '\')" class="px-3 py-1.5 text-xs font-medium border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors">Verwijder</button>' +
+                '<a href="/admin/projects/edit/' + escapeHtml(p.slug) + '" class="px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Bewerk</a>' +
+                '<button onclick="confirmDelete(\'' + escapeHtml(p.slug) + '\', \'' + escapeHtml(p.name) + '\')" class="px-3 py-1.5 text-xs font-medium border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors">Verwijder</button>' +
                 '</div></td></tr>';
         }).join('');
     }

@@ -3,7 +3,7 @@
 <div class="project-gallery">
     <div class="relative overflow-hidden bg-neutral-100 cursor-pointer" id="gallery-hero">
         <div class="aspect-[16/10] md:aspect-[16/9]">
-            <img src="<?= $pictures[0] ?>" alt="<?= escapeHtml($projectName) ?>" class="w-full h-full object-cover" id="gallery-hero-img">
+            <img src="<?= escapeHtml($pictures[0]) ?>" alt="<?= escapeHtml($projectName) ?>" class="w-full h-full object-cover" id="gallery-hero-img">
         </div>
         <button id="gallery-play-btn" class="absolute bottom-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors" aria-label="Slideshow starten">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -13,7 +13,7 @@
     <div class="flex gap-2 mt-2 overflow-x-auto" id="gallery-thumbnails">
         <?php foreach ($pictures as $i => $url): ?>
         <button class="flex-shrink-0 w-20 h-16 overflow-hidden border-2 transition-colors <?= $i === 0 ? 'border-accent-1' : 'border-transparent hover:border-gray-300' ?>" data-index="<?= $i ?>">
-            <img src="<?= $url ?>" alt="" class="w-full h-full object-cover" loading="lazy">
+            <img src="<?= escapeHtml($url) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
         </button>
         <?php endforeach; ?>
     </div>
@@ -30,7 +30,7 @@
 
 <script>
     (function() {
-        var pictures = <?= json_encode($pictures) ?>;
+        var pictures = <?= json_encode(array_map('escapeHtml', $pictures)) ?>;
         var currentIndex = 0;
         var autoplayInterval = null;
         var heroImg = document.getElementById('gallery-hero-img');

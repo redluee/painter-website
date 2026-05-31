@@ -68,7 +68,7 @@
     var selectedStars = 0;
     var processingEntries = new Map();
     var compressedSizes = new Map();
-    var slug = window.location.pathname.split('/').pop();
+    var slug = decodeURIComponent(window.location.pathname.split('/').pop());
 
     function updateStars(value) {
         document.querySelectorAll('#review-stars .star-unit').forEach(function (el, i) {
@@ -125,9 +125,9 @@
             var badge = i === 0 ? '<span class="absolute top-2 left-2 z-10 px-2 py-0.5 bg-accent-1/70 text-white text-xs rounded pointer-events-none">Primair</span>' : '';
             var size = compressedSizes.get(url);
             if (size !== undefined) badge = '<span class="absolute top-2 left-2 z-10 px-1.5 py-0.5 bg-green-600/80 text-white text-[10px] font-medium rounded pointer-events-none">' + ImageUtils.formatFileSize(size) + '</span>';
-            html += '<div class="relative group aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 cursor-grab" draggable="true" data-url="' + url + '">' + badge +
-                '<img src="' + url + '" class="w-full h-full object-cover pointer-events-none" alt="">' +
-                '<button type="button" data-url="' + url + '" class="delete-img absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-full text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-10">&times;</button></div>';
+            html += '<div class="relative group aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 cursor-grab" draggable="true" data-url="' + url.replace(/"/g, '&quot;') + '">' + badge +
+                '<img src="' + url.replace(/"/g, '&quot;') + '" class="w-full h-full object-cover pointer-events-none" alt="">' +
+                '<button type="button" data-url="' + url.replace(/"/g, '&quot;') + '" class="delete-img absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-full text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-10">&times;</button></div>';
         });
         existingImages.innerHTML = html;
         existingImages.querySelectorAll('.delete-img').forEach(function (btn) {

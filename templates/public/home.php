@@ -31,7 +31,7 @@
                 <?php if ($heroProject): ?>
                 <div class="relative">
                     <div class="aspect-[4/5] w-full overflow-hidden">
-                        <img src="<?= $heroProject['pictures'][0] ?? $DEFAULT_IMAGE ?>" alt="<?= escapeHtml($heroProject['name']) ?>" class="w-full h-full object-cover" loading="eager">
+                        <img src="<?= escapeHtml($heroProject['pictures'][0] ?? $DEFAULT_IMAGE) ?>" alt="<?= escapeHtml($heroProject['name']) ?>" class="w-full h-full object-cover" loading="eager">
                     </div>
                     <div class="absolute -bottom-4 -left-4 bg-white/90 backdrop-blur-sm border border-neutral-100 px-6 py-4">
                         <p class="text-xs text-neutral-500 uppercase tracking-widest mb-1">Uitgelicht</p>
@@ -62,9 +62,9 @@
         </div>
         <div class="stagger-children grid grid-cols-1 md:grid-cols-12 gap-6">
             <?php foreach ($recentProjects as $i => $project): $isFirst = $i === 0; ?>
-            <a href="/projecten/<?= $project['slug'] ?>" class="stagger-item group block col-span-1 <?= $isFirst ? 'md:col-span-7 md:row-span-2' : 'md:col-span-5' ?>">
+            <a href="/projecten/<?= escapeHtml($project['slug']) ?>" class="stagger-item group block col-span-1 <?= $isFirst ? 'md:col-span-7 md:row-span-2' : 'md:col-span-5' ?>">
                 <div class="relative overflow-hidden bg-neutral-100 <?= $isFirst ? 'aspect-[3/4]' : 'aspect-[4/3]' ?>">
-                    <img src="<?= $project['pictures'][0] ?? $DEFAULT_IMAGE ?>" alt="<?= escapeHtml($project['name']) ?>"
+                    <img src="<?= escapeHtml($project['pictures'][0] ?? $DEFAULT_IMAGE) ?>" alt="<?= escapeHtml($project['name']) ?>"
                         class="w-full h-full object-cover transition-transform duration-700 ease-spring group-hover:scale-105"
                         loading="<?= $i === 0 ? 'eager' : 'lazy' ?>">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -111,10 +111,10 @@
             <div class="lg:col-span-7 reveal-right">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="aspect-[3/4] overflow-hidden">
-                        <img src="<?= ($recentProjects[1]['pictures'][0] ?? $heroProject['pictures'][0] ?? $DEFAULT_IMAGE) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
+                        <img src="<?= escapeHtml($recentProjects[1]['pictures'][0] ?? $heroProject['pictures'][0] ?? $DEFAULT_IMAGE) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="aspect-square mt-16 overflow-hidden">
-                        <img src="<?= ($recentProjects[2]['pictures'][0] ?? $recentProjects[0]['pictures'][0] ?? $DEFAULT_IMAGE) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
+                        <img src="<?= escapeHtml($recentProjects[2]['pictures'][0] ?? $recentProjects[0]['pictures'][0] ?? $DEFAULT_IMAGE) ?>" alt="" class="w-full h-full object-cover" loading="lazy">
                     </div>
                 </div>
             </div>
