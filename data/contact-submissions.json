@@ -1,0 +1,9 @@
+[
+    {
+        "name": "Test",
+        "email": "test@example.com",
+        "subject": "offerte",
+        "message": "Dit is een testbericht.",
+        "createdAt": "2026-05-31T11:55:53+00:00"
+    }
+]

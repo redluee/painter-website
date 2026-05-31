@@ -1,7 +1,5 @@
-node_modules/
-.astro/
-.vercel/
-dist/
+vendor/
 data/*
 !data/*.json
+data/rate-logs/
 .env
