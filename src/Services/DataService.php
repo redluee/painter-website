@@ -14,8 +14,12 @@ final class DataService
 
     public function readProjects(): array
     {
-        $raw = file_get_contents($this->dataDir . '/projects.json');
-        $items = json_decode($raw, true) ?? [];
+        try {
+            $raw = file_get_contents($this->dataDir . '/projects.json');
+            $items = json_decode($raw, true) ?? [];
+        } catch (\Throwable) {
+            $items = [];
+        }
         return array_map(function ($p) {
             $p['slug'] = slugify($p['name']);
             return $p;
@@ -36,8 +40,12 @@ final class DataService
 
     public function readSiteContent(): array
     {
-        $raw = file_get_contents($this->dataDir . '/content.json');
-        return json_decode($raw, true) ?? [];
+        try {
+            $raw = file_get_contents($this->dataDir . '/content.json');
+            return json_decode($raw, true) ?? [];
+        } catch (\Throwable) {
+            return [];
+        }
     }
 
     public function writeSiteContent(array $content): void
@@ -68,8 +76,10 @@ final class DataService
 
     public function writeThemeSettings(array $settings): void
     {
-        $path = $this->dataDir . '/settings.json';
-        file_put_contents($path, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $tmpPath = $this->dataDir . '/settings.json.tmp';
+        $targetPath = $this->dataDir . '/settings.json';
+        file_put_contents($tmpPath, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        rename($tmpPath, $targetPath);
     }
 
     public function appendContactSubmission(array $submission): void
