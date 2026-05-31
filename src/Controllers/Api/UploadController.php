@@ -37,6 +37,14 @@ final class UploadController
 
             $tempPath = $file->getStream()->getMetadata('uri') ?? $file->getFilePath();
 
+            // Server-side MIME validation
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $detectedMime = $finfo->file($tempPath);
+            if (!in_array($detectedMime, self::ALLOWED_TYPES, true)) {
+                $response->getBody()->write(json_encode(['error' => 'Ongeldig bestandstype.']));
+                return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+            }
+
             $imgService = new ImageService();
             $url = $imgService->saveImage($tempPath, $file->getClientFilename());
 
@@ -45,7 +53,7 @@ final class UploadController
         } catch (\Throwable $e) {
             error_log('Upload handler error: ' . $e->getMessage());
             $response->getBody()->write(json_encode([
-                'error' => 'Upload mislukt: ' . ($e->getMessage() ?: 'Onbekende fout'),
+                'error' => 'Upload mislukt. Probeer het opnieuw.',
             ]));
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
         }
